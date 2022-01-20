@@ -5,7 +5,10 @@ import io.javalin.http.Context;
 import io.javalin.http.Handler;
 import io.javalin.http.NotFoundResponse;
 import org.example.controllers.GreetingController;
+import org.example.dao.InMemGreetingDao;
+import org.example.dao.Repository;
 import org.example.dto.ErrorResponse;
+import org.example.services.GreetingService;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Comparator;
@@ -28,8 +31,14 @@ public class App
         // listen on port 8080
         Javalin app = Javalin.create().start(8080);
 
+        // create all my dependencies at this level to control how they get used
+        // downstream
+        Repository<Integer, String> greetingRepo = new InMemGreetingDao();
+        GreetingService service = new GreetingService(greetingRepo);
+
+
         app.routes(() -> {
-            crud("greetings/{id}", new GreetingController());
+            crud("greetings/{id}", new GreetingController(service));
         });
 
         app.exception(NotFoundResponse.class, (e, ctx) -> {
