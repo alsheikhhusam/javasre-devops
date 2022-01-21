@@ -4,11 +4,18 @@ import io.javalin.Javalin;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
 import io.javalin.http.NotFoundResponse;
+import io.javalin.http.UnauthorizedResponse;
+import org.example.controllers.AuthController;
 import org.example.controllers.GreetingController;
 import org.example.dao.InMemGreetingDao;
+import org.example.dao.InMemUserRepository;
 import org.example.dao.Repository;
+import org.example.dao.UserRepository;
 import org.example.dto.ErrorResponse;
+import org.example.services.AuthService;
 import org.example.services.GreetingService;
+import org.example.services.JWTService;
+import org.example.services.UserService;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Comparator;
@@ -36,9 +43,21 @@ public class App
         Repository<Integer, String> greetingRepo = new InMemGreetingDao();
         GreetingService service = new GreetingService(greetingRepo);
 
+        UserRepository userRepository = new InMemUserRepository();
+        UserService userService = new UserService(userRepository);
+
+        JWTService tokenService = new JWTService();
+
+        AuthService authService = new AuthService(userService, tokenService);
+
+        AuthController authController = new AuthController(authService);
+
 
         app.routes(() -> {
             crud("greetings/{id}", new GreetingController(service));
+            path("auth", () -> {
+                post("login", authController.login);
+            });
         });
 
         app.exception(NotFoundResponse.class, (e, ctx) -> {
@@ -50,6 +69,12 @@ public class App
         app.exception(NullPointerException.class, (e, ctx) -> {
             ErrorResponse response = new ErrorResponse("The devs don't do null checks", 500);
             ctx.status(500);
+            ctx.json(response);
+        });
+
+        app.exception(UnauthorizedResponse.class, (e, ctx) -> {
+            ErrorResponse response = new ErrorResponse(e.getMessage(), e.getStatus());
+            ctx.status(e.getStatus());
             ctx.json(response);
         });
 
