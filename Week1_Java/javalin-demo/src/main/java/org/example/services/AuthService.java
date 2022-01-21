@@ -1,10 +1,12 @@
 package org.example.services;
 
+import io.javalin.core.security.RouteRole;
 import org.example.models.Roles;
 import org.example.models.User;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 
 public class AuthService {
@@ -27,10 +29,9 @@ public class AuthService {
         return token;
     }
 
-    public boolean authorize(User user, Roles[] requiredRoles) {
-        List<Roles> roles = Arrays.asList(requiredRoles);
+    public boolean authorize(User user, Set<RouteRole> requiredRoles) {
         for(Roles role : user.getRoles()) {
-            if(Arrays.asList(requiredRoles).contains(role)) {
+            if(requiredRoles.contains(role)) {
                 return true;
             }
         }
