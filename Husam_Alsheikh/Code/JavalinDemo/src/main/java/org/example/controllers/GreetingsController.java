@@ -2,6 +2,10 @@ package org.example.controllers;
 
 import io.javalin.apibuilder.CrudHandler;
 import io.javalin.http.Context;
+import io.javalin.http.NotFoundResponse;
+import org.example.dto.CreateGreetingDTO;
+import org.example.dto.GreetingDTO;
+import org.example.dto.ListGreetingDTO;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -22,10 +26,11 @@ public class GreetingsController implements CrudHandler {
 
     @Override
     public void create(@NotNull Context context) {
-        String newGreetings = context.body();
+        CreateGreetingDTO newGreetings = context.bodyAsClass(CreateGreetingDTO.class);
         int newId = idGen.getAndIncrement();
-        greetings.put(newId, newGreetings);
+        greetings.put(newId, newGreetings.getGreetingText());
         context.header("Location", "http://localhost:8080/greetings/" + newId);
+        context.status(201);
     }
 
     @Override
@@ -36,31 +41,43 @@ public class GreetingsController implements CrudHandler {
     @Override
     public void getAll(@NotNull Context context) {
         String like = context.queryParam("like");
-        List<String> convertedList = null;
+        List<GreetingDTO> convertedList = null;
 
         if(like != null){   //  If like has param, retrieve 'like' results
             convertedList = greetings
                     .entrySet()
                     .stream()
                     .filter(e -> e.getValue().contains(like))
-                    .map(Map.Entry::getValue)
+                    .map(e -> new GreetingDTO(e.getKey(), e.getValue()))
                     .collect(Collectors.toList());
         }
         else {  //  If like has no param, just retrieve all
             convertedList = greetings
                     .entrySet()
                     .stream()
-                    .map(Map.Entry::getValue)
+                    .map(e -> new GreetingDTO(e.getKey(), e.getValue()))
                     .collect(Collectors.toList());
         }
 
+        ListGreetingDTO greetings = new ListGreetingDTO(convertedList);
+
         //  serialize to JSON
-        context.json(convertedList);
+        context.json(greetings);
     }
 
     @Override
     public void getOne(@NotNull Context context, @NotNull String s) {
+        int id = Integer.parseInt(s);
+        String entry = greetings.get(id);
 
+        if(entry != null){
+            GreetingDTO greeting = new GreetingDTO(id, entry);
+            context.json(greeting);
+            return;
+        }
+
+        throw new NotFoundResponse("Greeting with id " + id + " was not found!");
+        //throw new NullPointerException();
     }
 
     @Override

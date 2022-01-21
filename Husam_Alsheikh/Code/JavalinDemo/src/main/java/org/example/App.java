@@ -1,7 +1,9 @@
 package org.example;
 
 import io.javalin.Javalin;
+import io.javalin.http.NotFoundResponse;
 import org.example.controllers.GreetingsController;
+import org.example.dto.ErrorResponse;
 
 import java.util.HashMap;
 import java.util.List;
@@ -20,6 +22,24 @@ public class App
 
         app.routes(() -> {
             crud("greetings/{id}", new GreetingsController());
+        });
+
+        app.exception(NotFoundResponse.class, (e, ctx) -> {
+            ErrorResponse response = new ErrorResponse(e.getMessage(), 404);
+            ctx.status(404);
+            ctx.json(response);
+        });
+
+        app.exception(NullPointerException.class, (e, ctx) -> {
+           ErrorResponse response = new ErrorResponse("The devs don't do null checks", 500);
+           ctx.status(500);
+           ctx.json(response);
+        });
+
+        app.exception(Exception.class, (e, ctx) -> {
+           ErrorResponse response = new ErrorResponse("Something went wrong, we don't know what!!", 500);
+           ctx.status(500);
+           ctx.json(response);
         });
 
         /* Method 2 short but still messy
