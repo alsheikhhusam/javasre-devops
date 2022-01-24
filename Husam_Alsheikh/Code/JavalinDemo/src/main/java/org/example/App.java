@@ -3,27 +3,30 @@ package org.example;
 import io.javalin.Javalin;
 import io.javalin.http.NotFoundResponse;
 import org.example.controllers.GreetingsController;
+import org.example.dao.InMemGreetingDao;
+import org.example.dao.Repository;
 import org.example.dto.ErrorResponse;
+import org.example.services.GreetingService;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
-
-import static io.javalin.apibuilder.ApiBuilder.*;
+import static io.javalin.apibuilder.ApiBuilder.crud;
 
 public class App 
 {
     public static void main( String[] args ) {
+        //  Create all dependencies at this level to control how they get used
+        //  Downstream dependency injection
+        Repository<Integer, String> greetingRepo = new InMemGreetingDao();
+        GreetingService service = new GreetingService(greetingRepo);
+
         //  Create a javalin application with a server and default config
         //  listen on port 8080
         Javalin app = Javalin.create().start(8080);
 
         app.routes(() -> {
-            crud("greetings/{id}", new GreetingsController());
+            crud("greetings/{id}", new GreetingsController(service));
         });
 
+        //  Exception Handling
         app.exception(NotFoundResponse.class, (e, ctx) -> {
             ErrorResponse response = new ErrorResponse(e.getMessage(), 404);
             ctx.status(404);
