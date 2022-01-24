@@ -1,14 +1,12 @@
 package org.example.services;
 
-import com.sun.org.apache.xml.internal.security.algorithms.SignatureAlgorithm;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
 import java.security.Key;
+import io.jsonwebtoken.SignatureAlgorithm;
 import java.util.Date;
 
 public class JWTService {

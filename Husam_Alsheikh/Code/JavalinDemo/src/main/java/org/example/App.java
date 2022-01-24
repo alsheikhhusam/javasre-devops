@@ -16,14 +16,14 @@ import org.example.services.GreetingService;
 import org.example.services.JWTService;
 import org.example.services.UserService;
 
-import static io.javalin.apibuilder.ApiBuilder.crud;
+import static io.javalin.apibuilder.ApiBuilder.*;
 
 public class App 
 {
     public static void main( String[] args ) {
         //  Create all dependencies at this level to control how they get used
         //  Downstream dependency injection
-        Repository<Integer, String> greetingRepo = new PostgresGreetingDao();
+        Repository<Integer, String> greetingRepo = new InMemGreetingDao();
         GreetingService service = new GreetingService(greetingRepo);
 
         UserRepository userRepository = new InMemUserRepository();
@@ -83,6 +83,9 @@ public class App
 
             crud("greetings/{id}", new GreetingController(service), Roles.USER);
             crud("admin/greetings/{id}", new AdminGreetingController(service), Roles.ADMIN);
+            path("auth", () -> {
+                post("login", authController.login);
+            });
         });
 
         //  Exception Handling

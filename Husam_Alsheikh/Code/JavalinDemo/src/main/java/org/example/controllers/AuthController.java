@@ -20,6 +20,7 @@ public class AuthController {
         if(token == null) {
             throw new UnauthorizedResponse("User could not be authenticated");
         }
+
         ctx.json(new LoginResponse(loginRequest.getUsername(), token));
     };
 }
