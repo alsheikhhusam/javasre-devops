@@ -1,12 +1,20 @@
 package org.example;
 
 import io.javalin.Javalin;
+import io.javalin.http.ForbiddenResponse;
 import io.javalin.http.NotFoundResponse;
-import org.example.controllers.GreetingsController;
-import org.example.dao.InMemGreetingDao;
-import org.example.dao.Repository;
+import io.jsonwebtoken.Claims;
+import org.example.controllers.AdminGreetingController;
+import org.example.controllers.AuthController;
+import org.example.controllers.GreetingController;
+import org.example.dao.*;
 import org.example.dto.ErrorResponse;
+import org.example.models.Roles;
+import org.example.models.User;
+import org.example.services.AuthService;
 import org.example.services.GreetingService;
+import org.example.services.JWTService;
+import org.example.services.UserService;
 
 import static io.javalin.apibuilder.ApiBuilder.crud;
 
@@ -15,15 +23,66 @@ public class App
     public static void main( String[] args ) {
         //  Create all dependencies at this level to control how they get used
         //  Downstream dependency injection
-        Repository<Integer, String> greetingRepo = new InMemGreetingDao();
+        Repository<Integer, String> greetingRepo = new PostgresGreetingDao();
         GreetingService service = new GreetingService(greetingRepo);
 
+        UserRepository userRepository = new InMemUserRepository();
+        UserService userService = new UserService(userRepository);
+        JWTService tokenService = new JWTService();
+        AuthService authService = new AuthService(userService, tokenService);
+        AuthController authController = new AuthController(authService);
+
+            //  Without Access Management!
         //  Create a javalin application with a server and default config
         //  listen on port 8080
-        Javalin app = Javalin.create().start(8080);
+        //Javalin app = Javalin.create().start(8080);
+
+        Javalin app = Javalin.create(javalinConfig -> {
+            javalinConfig.accessManager((handler, context, requiredRoles) -> {
+                String header = context.header("Authorization");
+                if(requiredRoles.isEmpty()) {
+                    System.out.println(requiredRoles);
+                    handler.handle(context);
+                    return;
+                }
+                if(header == null) {
+                    throw new ForbiddenResponse("This request requires and Authorization header");
+                } else {
+                    if(!header.startsWith("Bearer ")) {
+                        throw new ForbiddenResponse("This request requires token bearer access");
+                    } else {
+                        String token = header.split(" ")[1];
+                        try {
+                            Claims claims = tokenService.decode(token);
+                            String username = claims.getSubject();
+
+                            User user = userService.getUserByUsername(username);
+
+                            if(user == null) {
+                                throw new ForbiddenResponse("User unauthorized to perform request");
+                            } else {
+                                if(authService.authorize(user, requiredRoles)) {
+                                    // if we get here the user is authorized
+                                    handler.handle(context);
+                                } else {
+                                    throw new ForbiddenResponse("User unauthorized to perform request");
+                                }
+                            }
+                        } catch (Exception ex) {
+                            System.out.println(ex.getMessage());
+                            throw new ForbiddenResponse("The user could not be validated");
+                        }
+
+                    }
+                }
+            });
+        }).start(8080);
 
         app.routes(() -> {
-            crud("greetings/{id}", new GreetingsController(service));
+            //crud("greetings/{id}", new GreetingsController(service));
+
+            crud("greetings/{id}", new GreetingController(service), Roles.USER);
+            crud("admin/greetings/{id}", new AdminGreetingController(service), Roles.ADMIN);
         });
 
         //  Exception Handling
