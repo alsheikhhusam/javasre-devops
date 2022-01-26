@@ -53,7 +53,7 @@ public class UserController implements CrudHandler {
     @Override
     public void update(@NotNull Context context, @NotNull String s) {
         int id = Integer.parseInt(s);   //  Account Number
-        int deposit = Integer.parseInt(context.body());
+        int amount = Integer.parseInt(context.body());
 
         Set<String> loggers = userService.getLoggers(); //  Logged in users
 
@@ -68,9 +68,18 @@ public class UserController implements CrudHandler {
             throw new ForbiddenResponse("User not authorized to deposit");
         }
 
-        accountDTO.setBalance(accountDTO.getBalance() + deposit);
-        accountService.updateBalance(accountDTO);
+        if(context.path().equals("/user/deposit/" + id)){   //  If deposit path
+            accountDTO.setBalance(accountDTO.getBalance() + amount);
+        }
+        else if(context.path().equals("/user/withdraw/" + id)){ //  If withdraw path
+            if(accountDTO.getBalance() < amount){
+                throw new ArithmeticException("Amount to be withdrawn is greater than balance");
+            }
 
+            accountDTO.setBalance(accountDTO.getBalance() - amount);
+        }
+
+        accountService.updateBalance(accountDTO);
 
         context.header("Location", "http://localhost:4200/user/deposit/" + id);
         context.status(201);

@@ -8,8 +8,15 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class InMemAccountDao implements Repository<Integer, AccountDTO>{   //  <id, accountNum>
-    AtomicInteger idGen = new AtomicInteger(1); //  Thread safe integer
-    Map<Integer, AccountDTO> accounts = new HashMap<>();
+    AtomicInteger idGen;
+    Map<Integer, AccountDTO> accounts;
+
+    public InMemAccountDao(){
+        idGen = new AtomicInteger(1);
+        accounts = new HashMap<>();
+
+        accounts.put(idGen.get(), new AccountDTO(2, idGen.getAndIncrement(), 200, "alsheikh.husam"));
+    }
 
     public int getId(){
         return idGen.get();
