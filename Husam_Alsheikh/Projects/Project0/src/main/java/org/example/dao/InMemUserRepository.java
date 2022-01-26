@@ -61,4 +61,9 @@ public class InMemUserRepository implements UserRepository {
     public void deleteById(Integer integer) {
 
     }
+
+    @Override
+    public void update(User obj) {
+
+    }
 }

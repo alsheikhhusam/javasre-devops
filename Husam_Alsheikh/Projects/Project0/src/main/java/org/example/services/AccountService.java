@@ -18,6 +18,10 @@ public class AccountService {
         return accountRepository.save(accountDTO);
     }
 
+    public void updateBalance(AccountDTO newBalance){
+        accountRepository.update(newBalance);
+    }
+
     public AccountDTO getAccount(int id){
         return accountRepository.getById(id);
     }

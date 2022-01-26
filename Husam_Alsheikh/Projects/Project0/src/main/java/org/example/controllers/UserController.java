@@ -32,9 +32,9 @@ public class UserController implements CrudHandler {
     public void getOne(@NotNull Context context, @NotNull String s) {
         int id = Integer.parseInt(s);   //  Account Number
 
-        Set<String> loggers = userService.getLoggers();
+        Set<String> loggers = userService.getLoggers(); //  Logged in users
 
-        if(loggers.isEmpty()){  //  If no logged-in users
+        if(loggers.isEmpty()){  //  If no logged-in users throw error
             throw new ForbiddenResponse("No username found - User not authorized");
         }
 
@@ -45,12 +45,36 @@ public class UserController implements CrudHandler {
             throw new ForbiddenResponse("User not authorized to view account balance");
         }
 
+        context.header("Location", "http://localhost:4200/user/viewBalance/" + id);
+        context.status(201);
         context.result(String.valueOf(accountDTO.getBalance()));
     }
 
     @Override
     public void update(@NotNull Context context, @NotNull String s) {
+        int id = Integer.parseInt(s);   //  Account Number
+        int deposit = Integer.parseInt(context.body());
 
+        Set<String> loggers = userService.getLoggers(); //  Logged in users
+
+        if(loggers.isEmpty()){  //  If no logged -in users throw error
+            throw new ForbiddenResponse("No username found - User not authorized");
+        }
+
+        AccountDTO accountDTO = accountService.getAccount(id);  //  Get Bank Account
+
+        //  Check to see if account belongs to one of the logged-in users, if not throw error
+        if(!loggers.contains(accountDTO.getUsername())){
+            throw new ForbiddenResponse("User not authorized to deposit");
+        }
+
+        accountDTO.setBalance(accountDTO.getBalance() + deposit);
+        accountService.updateBalance(accountDTO);
+
+
+        context.header("Location", "http://localhost:4200/user/deposit/" + id);
+        context.status(201);
+        context.json(accountService.getAccount(id));
     }
 
     @Override

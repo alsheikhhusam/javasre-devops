@@ -12,4 +12,6 @@ public interface Repository<ID, T> {
     void delete(T obj);
 
     void deleteById(ID id);
+
+    void update(T obj);
 }

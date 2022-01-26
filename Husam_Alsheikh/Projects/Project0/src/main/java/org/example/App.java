@@ -78,7 +78,10 @@ public class App
             path("user", () -> {
                 post("login", authController.login);
 
-                crud("viewBalance/{id}", new UserController(accountService, userService), Roles.USER);
+                crud("viewBalance/{id}", new UserController(accountService, userService), Roles.USER, Roles.EMPLOYEE);
+                crud("deposit/{id}", new UserController(accountService, userService), Roles.USER, Roles.EMPLOYEE);
+                crud("withdraw/{id}", new UserController(accountService, userService), Roles.USER, Roles.EMPLOYEE);
+                crud("transfer/{id}", new UserController(accountService, userService), Roles.USER, Roles.EMPLOYEE);
             });
 
         });
