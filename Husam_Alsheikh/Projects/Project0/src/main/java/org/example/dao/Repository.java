@@ -9,8 +9,6 @@ public interface Repository<ID, T> {
 
     T getById(ID id);
 
-
-
     void delete(T obj);
 
     void deleteById(ID id);

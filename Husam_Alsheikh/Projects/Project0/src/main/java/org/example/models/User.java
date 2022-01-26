@@ -1,18 +1,34 @@
 package org.example.models;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class User {
     private int id;
     private String username;
     private String password;
-    private int accountNum;
+    private List<Integer> accountsId;
     private Roles[] roles;
 
-    public User(int id, String username, String password, int accountNum, Roles[] roles) {
+    public User(){
+        accountsId = new ArrayList<>();
+    }
+
+    public User(int id, String username, String password, List<Integer> accountsId, Roles[] roles) {
         this.id = id;
         this.username = username;
         this.password = password;
-        this.accountNum = accountNum;
+        this.accountsId = accountsId;
         this.roles = roles;
+    }
+
+    public User(int id, String username, String password, Roles[] roles) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.roles = roles;
+
+        accountsId = new ArrayList<>();
     }
 
     public int getId() {
@@ -39,19 +55,19 @@ public class User {
         this.password = password;
     }
 
-    public int getAccountNum() {
-        return accountNum;
-    }
-
-    public void setAccountNum(int accountNum) {
-        this.accountNum = accountNum;
-    }
-
     public Roles[] getRoles() {
         return roles;
     }
 
     public void setRoles(Roles[] roles) {
         this.roles = roles;
+    }
+
+    public List<Integer> getAccountsId() {
+        return accountsId;
+    }
+
+    public void setAccountsId(List<Integer> accountsId) {
+        this.accountsId = accountsId;
     }
 }

@@ -1,20 +1,29 @@
 package org.example.dto;
 
 public class CreateAccountDTO {
-    private String name;
+    private int userid;
+    private String username;
 
-    public CreateAccountDTO() {
+    public CreateAccountDTO() {}
+
+    public CreateAccountDTO(int userId, String username) {
+        this.userid = userId;
+        this.username = username;
     }
 
-    public CreateAccountDTO(String name) {
-        this.name = name;
+    public int getUserid() {
+        return userid;
     }
 
-    public String getName() {
-        return name;
+    public void setUserid(int userid) {
+        this.userid = userid;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

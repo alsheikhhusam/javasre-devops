@@ -11,10 +11,14 @@ public class InMemAccountDao implements Repository<Integer, AccountDTO>{   //  <
     AtomicInteger idGen = new AtomicInteger(1); //  Thread safe integer
     Map<Integer, AccountDTO> accounts = new HashMap<>();
 
+    public int getId(){
+        return idGen.get();
+    }
+
     @Override
     public Integer save(AccountDTO obj) {
-        accounts.put(idGen.getAndIncrement(), obj);
-        return idGen.get();
+        accounts.put(idGen.get(), obj);
+        return idGen.getAndIncrement();
     }
 
     @Override

@@ -2,15 +2,14 @@ package org.example;
 
 import io.javalin.Javalin;
 import io.javalin.http.ForbiddenResponse;
-import io.javalin.http.NotFoundResponse;
 import io.jsonwebtoken.Claims;
 import org.example.controllers.AuthController;
 import org.example.controllers.EmpController;
+import org.example.controllers.UserController;
 import org.example.dao.*;
 import org.example.dto.AccountDTO;
-import org.example.models.Employee;
-import org.example.models.Roles;
 import org.example.models.User;
+import org.example.models.Roles;
 import org.example.services.*;
 
 import static io.javalin.apibuilder.ApiBuilder.*;
@@ -20,16 +19,12 @@ public class App
     public static void main( String[] args )
     {
         Repository<Integer, AccountDTO> accountRepo = new InMemAccountDao();
-        AccountService service = new AccountService(accountRepo);
-
+        AccountService accountService = new AccountService(accountRepo);
         UserRepository userRepository = new InMemUserRepository();
         UserService userService = new UserService(userRepository);
 
-        EmpRepository empRepository = new InMemEmpRepository();
-        EmpService empService = new EmpService(empRepository);
-
         JWTService tokenService = new JWTService();
-        AuthService authService = new AuthService(empService, tokenService);
+        AuthService authService = new AuthService(userService, tokenService);
         AuthController authController = new AuthController(authService);
 
 
@@ -52,12 +47,12 @@ public class App
                             Claims claims = tokenService.decode(token);
                             String username = claims.getSubject();
 
-                            Employee emp = empService.getEmpByUsername(username);
+                            User user = userService.getUserByUsername(username);
 
-                            if(emp == null) {
+                            if(user == null) {
                                 throw new ForbiddenResponse("User unauthorized to perform request");
                             } else {
-                                if(authService.authorize(emp, requiredRoles)) {
+                                if(authService.authorize(user, requiredRoles)) {
                                     // if we get here the user is authorized
                                     handler.handle(context);
                                 } else {
@@ -74,11 +69,18 @@ public class App
         }).start(4200);
 
         app.routes(() -> {
-            path("auth", () -> {
+            path("employee", () -> {
                 post("login", authController.login);
+
+                crud("createAccount/{id}", new EmpController(accountService, userService), Roles.EMPLOYEE);
             });
 
-            crud("createAccount/{id}", new EmpController(service), Roles.EMPLOYEE);
+            path("user", () -> {
+                post("login", authController.login);
+
+                crud("viewBalance/{id}", new UserController(accountService, userService), Roles.USER);
+            });
+
         });
     }
 }
