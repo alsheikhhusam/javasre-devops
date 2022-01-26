@@ -1,12 +1,17 @@
 package org.example;
 
 import io.javalin.Javalin;
-import io.javalin.http.*;
+import io.javalin.http.ForbiddenResponse;
+import io.javalin.http.NotFoundResponse;
+import io.javalin.http.UnauthorizedResponse;
 import io.jsonwebtoken.Claims;
 import org.example.controllers.AdminGreetingController;
 import org.example.controllers.AuthController;
 import org.example.controllers.GreetingController;
-import org.example.dao.*;
+import org.example.dao.InMemUserRepository;
+import org.example.dao.PostgresGreetingDao;
+import org.example.dao.Repository;
+import org.example.dao.UserRepository;
 import org.example.dto.ErrorResponse;
 import org.example.models.Roles;
 import org.example.models.User;
@@ -14,11 +19,6 @@ import org.example.services.AuthService;
 import org.example.services.GreetingService;
 import org.example.services.JWTService;
 import org.example.services.UserService;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 import static io.javalin.apibuilder.ApiBuilder.*;
 
