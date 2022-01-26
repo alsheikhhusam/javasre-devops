@@ -4,6 +4,7 @@ import io.javalin.apibuilder.CrudHandler;
 import io.javalin.http.Context;
 import io.javalin.http.ForbiddenResponse;
 import org.example.dto.AccountDTO;
+import org.example.dto.TransferDTO;
 import org.example.services.AccountService;
 import org.example.services.UserService;
 import org.jetbrains.annotations.NotNull;
@@ -53,6 +54,18 @@ public class UserController implements CrudHandler {
     @Override
     public void update(@NotNull Context context, @NotNull String s) {
         int id = Integer.parseInt(s);   //  Account Number
+
+        if(context.path().equals("/user/transfer/" + id)){
+            TransferDTO transferDTO = context.bodyAsClass(TransferDTO.class);
+
+            //  Need to implement authorization of transfer (userid, username and accountNum)
+
+            AccountDTO receiverAccount = accountService.transfer(accountService.getAccount(id), accountService.getAccount(transferDTO.getAccountNum()), transferDTO.getTransferAmount());
+
+            context.json(receiverAccount);
+            return;
+        }
+
         int amount = Integer.parseInt(context.body());
 
         Set<String> loggers = userService.getLoggers(); //  Logged in users

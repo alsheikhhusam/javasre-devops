@@ -18,6 +18,24 @@ public class AccountService {
         return accountRepository.save(accountDTO);
     }
 
+    public AccountDTO transfer(AccountDTO from, AccountDTO to, int amount){
+        //  Subtract and update from sending account
+        from.setBalance(from.getBalance() - amount);
+        updateBalance(from);
+
+        //  Add and update from receiving account
+        to.setBalance(to.getBalance() + amount);
+        updateBalance(to);
+
+        return accountRepository.getById(to.getAccountNum());
+    }
+
+    public int getBalance(int accountNum){
+        AccountDTO temp = accountRepository.getById(accountNum);
+
+        return temp.getBalance();
+    }
+
     public void updateBalance(AccountDTO newBalance){
         accountRepository.update(newBalance);
     }

@@ -3,14 +3,16 @@ package org.example.dto;
 public class TransferDTO {
     private int userid;
     private String username;
+    private int accountNum;
     private int transferAmount;
 
     public TransferDTO() {
     }
 
-    public TransferDTO(int userid, String username, int transferAmount) {
+    public TransferDTO(int userid, String username, int accountNum, int transferAmount) {
         this.userid = userid;
         this.username = username;
+        this.accountNum = accountNum;
         this.transferAmount = transferAmount;
     }
 
@@ -28,6 +30,14 @@ public class TransferDTO {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public int getAccountNum() {
+        return accountNum;
+    }
+
+    public void setAccountNum(int accountNum) {
+        this.accountNum = accountNum;
     }
 
     public int getTransferAmount() {

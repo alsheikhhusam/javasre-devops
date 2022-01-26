@@ -14,6 +14,8 @@ public class UserService {
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
         loggers = new HashSet<>();
+
+        loggers.add("alsheikh.husam");
     }
 
     public User getUserByUsername(String username) {
