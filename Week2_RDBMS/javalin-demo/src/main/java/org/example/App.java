@@ -12,13 +12,20 @@ import org.example.dao.InMemUserRepository;
 import org.example.dao.PostgresGreetingDao;
 import org.example.dao.Repository;
 import org.example.dao.UserRepository;
+import org.example.database.ConnectionManager;
+import org.example.database.PostgresConnectionManager;
 import org.example.dto.ErrorResponse;
+import org.example.models.Greeting;
 import org.example.models.Roles;
 import org.example.models.User;
 import org.example.services.AuthService;
 import org.example.services.GreetingService;
 import org.example.services.JWTService;
 import org.example.services.UserService;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.Properties;
 
 import static io.javalin.apibuilder.ApiBuilder.*;
 
@@ -31,7 +38,21 @@ public class App
     public static void main( String[] args ) {
         // create all my dependencies at this level to control how they get used
         // downstream DEPENDENCY INJECTION
-        Repository<Integer, String> greetingRepo = new PostgresGreetingDao();
+        Properties connectionManagerProps = new Properties();
+        connectionManagerProps.setProperty("db.username", "postgres");
+        connectionManagerProps.setProperty("db.password", "p@$$w0rd123");
+        connectionManagerProps.setProperty("db.url", "jdbc:postgresql://35.226.133.168:5432/postgres");
+
+        ConnectionManager connectionManager = new PostgresConnectionManager();
+        try {
+            connectionManager.init(connectionManagerProps);
+        } catch (SQLException throwables) {
+            throw new IllegalStateException(throwables);
+        }
+
+
+        Repository<Integer, Greeting> greetingRepo = new PostgresGreetingDao(connectionManager);
+
         GreetingService service = new GreetingService(greetingRepo);
 
         UserRepository userRepository = new InMemUserRepository();
@@ -71,6 +92,7 @@ public class App
                             } else {
                                 if(authService.authorize(user, requiredRoles)) {
                                     // if we get here the user is authorized
+                                    context.cookieStore("principal", user);
                                     handler.handle(context);
                                 } else {
                                     throw new ForbiddenResponse("User unauthorized to perform request");
@@ -88,10 +110,24 @@ public class App
 
 
         app.routes(() -> {
-            crud("greetings/{id}", new GreetingController(service), Roles.USER);
-            crud("admin/greetings/{id}", new AdminGreetingController(service), Roles.ADMIN);
+            crud("greetings/{id}", new GreetingController(service), Roles.ROLE_USER);
+            crud("admin/greetings/{id}", new AdminGreetingController(service), Roles.ROLE_ADMIN);
             path("auth", () -> {
                 post("login", authController.login);
+            });
+            path("users/{id}/greetings", () -> {
+                get((context) -> {
+                    int requestId = Integer.parseInt(context.pathParam("id"));
+                    System.out.println(requestId);
+                    User principal = context.cookieStore("principal");
+                    System.out.println(principal);
+                    if(principal.getId() != requestId && !principal.getRoles().contains(Roles.ROLE_ADMIN)) {
+                        throw new ForbiddenResponse("Requestor is not authorized to access these resources");
+                    } else {
+                        // get all the of the requested resources
+                        context.result("All of your resources");
+                    }
+                }, Roles.ROLE_USER);
             });
         });
 
@@ -114,6 +150,7 @@ public class App
         });
 
         app.exception(Exception.class, (e, ctx) -> {
+            e.printStackTrace();
             ErrorResponse response = new ErrorResponse("Something went wrong, we don't know what!!", 500);
             ctx.status(500);
             ctx.json(response);

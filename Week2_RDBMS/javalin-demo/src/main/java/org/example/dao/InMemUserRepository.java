@@ -13,8 +13,8 @@ public class InMemUserRepository implements UserRepository {
     public InMemUserRepository() {
         idGen = new AtomicInteger(1);
         users = new HashMap<>();
-        users.put(idGen.getAndIncrement(), new User(idGen.get(), "august.duet", "p@$$w0rd123", new HashSet<Roles>(Arrays.asList(Roles.ADMIN, Roles.USER))));
-        users.put(idGen.getAndIncrement(), new User(idGen.get(), "john.doe", "p@$$w0rd123", new HashSet<>(Arrays.asList(Roles.USER))));
+        users.put(idGen.getAndIncrement(), new User(idGen.get(), "august.duet", "p@$$w0rd123", new HashSet<Roles>(Arrays.asList(Roles.ROLE_ADMIN, Roles.ROLE_USER))));
+        users.put(idGen.getAndIncrement(), new User(idGen.get(), "john.doe", "p@$$w0rd123", new HashSet<>(Arrays.asList(Roles.ROLE_USER))));
     }
 
     @Override

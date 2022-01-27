@@ -3,13 +3,15 @@ package org.example.dto;
 public class GreetingDTO {
     private int id;
     private String greeting;
+    private UserProfileDTO username;
 
     public GreetingDTO() {
     }
 
-    public GreetingDTO(int id, String greeting) {
+    public GreetingDTO(int id, String greeting, UserProfileDTO username) {
         this.id = id;
         this.greeting = greeting;
+        this.username = username;
     }
 
     public int getId() {
@@ -26,5 +28,13 @@ public class GreetingDTO {
 
     public void setGreeting(String greeting) {
         this.greeting = greeting;
+    }
+
+    public UserProfileDTO getUsername() {
+        return username;
+    }
+
+    public void setUsername(UserProfileDTO username) {
+        this.username = username;
     }
 }

@@ -3,6 +3,7 @@ package org.example.controllers;
 import io.javalin.apibuilder.CrudHandler;
 import io.javalin.http.Context;
 import io.javalin.http.ForbiddenResponse;
+import org.example.models.User;
 import org.example.services.GreetingService;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,7 +16,7 @@ public class GreetingController implements CrudHandler {
 
     @Override
     public void getAll(@NotNull Context context) {
-        context.result("You made it");
+        context.json(service.getAllGreetings());
     }
 
     @Override
