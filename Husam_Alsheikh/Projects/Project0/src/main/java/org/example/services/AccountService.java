@@ -12,9 +12,7 @@ public class AccountService {
     }
 
     public int save(int userId, String name){
-        InMemAccountDao tempRepo = (InMemAccountDao) accountRepository;
-
-        AccountDTO accountDTO = new AccountDTO(userId, tempRepo.getId(), name);
+        AccountDTO accountDTO = new AccountDTO(userId, accountRepository.getId(), name);
         return accountRepository.save(accountDTO);
     }
 

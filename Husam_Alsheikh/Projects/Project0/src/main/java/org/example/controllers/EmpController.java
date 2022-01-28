@@ -12,10 +12,6 @@ public class EmpController implements CrudHandler {
     private AccountService accountService;
     private UserService userService;
 
-    public EmpController(AccountService accountService) {
-        this.accountService = accountService;
-    }
-
     public EmpController(AccountService accountService, UserService userService) {
         this.accountService = accountService;
         this.userService = userService;

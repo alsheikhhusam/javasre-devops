@@ -14,4 +14,6 @@ public interface Repository<ID, T> {
     void deleteById(ID id);
 
     void update(T obj);
+
+    ID getId();
 }

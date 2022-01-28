@@ -16,9 +16,9 @@ public class InMemUserRepository implements UserRepository {
         idGen = new AtomicInteger(1);
         users = new HashMap<>();
 
-        users.put(idGen.get(), new User(idGen.getAndIncrement(), "husam.alsheikh", "7841", new HashSet<Roles>(Arrays.asList(Roles.EMPLOYEE))));
-        users.put(idGen.get(), new User(idGen.getAndIncrement(), "alsheikh.husam", "7841", new HashSet<Roles>(Arrays.asList(Roles.USER))));
-        users.put(idGen.get(), new User(idGen.getAndIncrement(), "john.doe", "7841", new HashSet<Roles>(Arrays.asList(Roles.USER))));
+        users.put(idGen.get(), new User(idGen.getAndIncrement(), "husam.alsheikh", "7841", new HashSet<>(Collections.singletonList(Roles.EMPLOYEE))));
+        users.put(idGen.get(), new User(idGen.getAndIncrement(), "alsheikh.husam", "7841", new HashSet<>(Collections.singletonList(Roles.USER))));
+        users.put(idGen.get(), new User(idGen.getAndIncrement(), "john.doe", "7841", new HashSet<>(Collections.singletonList(Roles.USER))));
     }
 
     @Override
@@ -63,5 +63,10 @@ public class InMemUserRepository implements UserRepository {
     @Override
     public void update(User obj) {  //  Update user
         users.replace(obj.getId(), obj);
+    }
+
+    @Override
+    public Integer getId() {
+        return null;
     }
 }

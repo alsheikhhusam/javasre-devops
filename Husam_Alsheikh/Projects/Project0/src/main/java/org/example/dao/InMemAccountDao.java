@@ -19,10 +19,6 @@ public class InMemAccountDao implements Repository<Integer, AccountDTO>{   //  <
         accounts.put(idGen.get(), new AccountDTO(idGen.get(), "alsheikh.husam", 200, idGen.getAndIncrement()));
     }
 
-    public int getId(){
-        return idGen.get();
-    }
-
     @Override
     public Integer save(AccountDTO obj) {   //  Save/Create new account to repository
         accounts.put(idGen.get(), obj);
@@ -52,5 +48,10 @@ public class InMemAccountDao implements Repository<Integer, AccountDTO>{   //  <
     @Override
     public void update(AccountDTO obj) {
         accounts.replace(obj.getAccountNum(), obj);
+    }
+
+    @Override
+    public Integer getId() {
+        return idGen.get();
     }
 }
