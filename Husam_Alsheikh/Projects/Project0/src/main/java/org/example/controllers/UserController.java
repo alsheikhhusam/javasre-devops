@@ -42,13 +42,14 @@ public class UserController implements CrudHandler {
         //  Logged in user
         User logger = context.cookieStore("principal");
 
-        //  If no logged-in users throw error
+        //  If no logged-in users
         if(logger == null){
             throw new ForbiddenResponse("No user found - User not authorized");
         }
 
-        //  Check to see if account belongs to the logged-in user
+        //  Output Transaction History
         if(context.path().equals("/user/getHistory/userID/" + id)){
+            //  Check to see if account belongs to the logged-in user
             if(!logger.getRoles().contains(Roles.EMPLOYEE)){
                 if(logger.getId() != id || !logger.getUsername().equals(userService.getUserByID(id).getUsername())){
                     throw new ForbiddenResponse("User not authorized to view transaction history");
@@ -105,10 +106,11 @@ public class UserController implements CrudHandler {
             TransferDTO transferDTO = context.bodyAsClass(TransferDTO.class);
 
             //  Get the user that is transferring FROM
-            User fromUser = userService.getUserByUsername(transferDTO.getUsername());
+            User fromUser = userService.getUserByID(accountService.getAccount(id).getUserid());
+            User toUser = userService.getUserByID(transferDTO.getUserid());
 
             //  If user id, password, account all match the user with that username; Only then allow balance transfer
-            if(fromUser.getId() == transferDTO.getUserid() && fromUser.getPassword().equals(transferDTO.getPassword()) && fromUser.getAccountsId().contains(transferDTO.getAccountNum())){
+            if(toUser.getId() == transferDTO.getUserid() && toUser.getPassword().equals(transferDTO.getPassword()) && toUser.getAccountsId().contains(transferDTO.getAccountNum())){
                 //  Transfer Balance
                 AccountDTO receiverAccount = accountService.transfer(accountService.getAccount(id), accountService.getAccount(transferDTO.getAccountNum()), transferDTO.getTransferAmount());
 
