@@ -1,0 +1,19 @@
+Index: Week1_Java/unit-testing-calculator/src/main/java/org/example/calculator/SimpleCalculator.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package org.example.calculator;\r\n\r\npublic class SimpleCalculator implements Calculator{\r\n\r\n    /**\r\n     * @author Richard Madol\r\n     * @param x some whole number either positive or negative\r\n     * @param  y some....\r\n     * @return the desired output\r\n     */\r\n    \r\n    @Override\r\n    public int add(int x, int y) {\r\n        return x + y;\r\n    }\r\n\r\n    @Override\r\n    public int subtract(int x, int y) {\r\n\r\n        return x - y;\r\n    }\r\n\r\n    @Override\r\n    public int multiply(int x, int y) {\r\n        return x * y;\r\n    }\r\n\r\n    @Override\r\n    public int divide(int x, int y) {\r\n        return x / y;\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Week1_Java/unit-testing-calculator/src/main/java/org/example/calculator/SimpleCalculator.java b/Week1_Java/unit-testing-calculator/src/main/java/org/example/calculator/SimpleCalculator.java
+--- a/Week1_Java/unit-testing-calculator/src/main/java/org/example/calculator/SimpleCalculator.java	(revision 5f332a3bb38ac3a71b5f66b7db79c6c01efbe89d)
++++ b/Week1_Java/unit-testing-calculator/src/main/java/org/example/calculator/SimpleCalculator.java	(date 1643043707207)
+@@ -8,7 +8,7 @@
+      * @param  y some....
+      * @return the desired output
+      */
+-    
++
+     @Override
+     public int add(int x, int y) {
+         return x + y;
