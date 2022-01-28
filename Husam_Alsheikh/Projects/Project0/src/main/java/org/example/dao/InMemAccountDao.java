@@ -15,7 +15,8 @@ public class InMemAccountDao implements Repository<Integer, AccountDTO>{   //  <
         idGen = new AtomicInteger(1);
         accounts = new HashMap<>();
 
-        accounts.put(idGen.get(), new AccountDTO(2, idGen.getAndIncrement(), 200, "alsheikh.husam"));
+        accounts.put(idGen.get(), new AccountDTO(2, "alsheikh.husam", 200, idGen.getAndIncrement()));
+        accounts.put(idGen.get(), new AccountDTO(1, "husam.alsheikh", 1000, idGen.getAndIncrement()));
     }
 
     public int getId(){

@@ -2,18 +2,18 @@ package org.example.dto;
 
 public class AccountDTO {
     private int userid;
-    private int accountNum;
-    private int balance;
     private String username;
+    private int balance;
+    private int accountNum;
 
-    public AccountDTO(int userid, int accountNum, int balance, String name) {
+    public AccountDTO(int userid, String username, int balance, int accountNum) {
         this.userid = userid;
-        this.accountNum = accountNum;
+        this.username = username;
         this.balance = balance;
-        this.username = name;
+        this.accountNum = accountNum;
     }
 
-    public AccountDTO(int userid,int accountNum, String username){
+    public AccountDTO(int userid, int accountNum, String username){
         this.userid = userid;
         this.accountNum = accountNum;
         this.username = username;

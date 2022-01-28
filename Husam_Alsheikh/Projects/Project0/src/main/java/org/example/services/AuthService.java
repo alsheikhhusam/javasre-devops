@@ -17,9 +17,7 @@ public class AuthService {
 
     public String authenticate(String username, String password) {
         User user = userService.getUserByUsername(username);
-        Roles[] roles = userService.getUserByUsername(username).getRoles();
-
-        userService.addLogger(username);
+        Set<Roles> roles = userService.getUserByUsername(username).getRoles();
 
         if(user == null || !(user.getPassword().equals(password))){
             return null;

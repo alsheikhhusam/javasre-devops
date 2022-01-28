@@ -8,6 +8,7 @@ import org.example.controllers.EmpController;
 import org.example.controllers.UserController;
 import org.example.dao.*;
 import org.example.dto.AccountDTO;
+import org.example.dto.CreateAccountDTO;
 import org.example.models.User;
 import org.example.models.Roles;
 import org.example.services.*;
@@ -53,8 +54,13 @@ public class App
                                 throw new ForbiddenResponse("User unauthorized to perform request");
                             } else {
                                 if(authService.authorize(user, requiredRoles)) {
+
+                                    //  Store user in cookie store
+                                    context.cookieStore("principal", user);
+
                                     // if we get here the user is authorized
                                     handler.handle(context);
+
                                 } else {
                                     throw new ForbiddenResponse("User unauthorized to perform request");
                                 }
@@ -73,15 +79,30 @@ public class App
                 post("login", authController.login);
 
                 crud("createAccount/{id}", new EmpController(accountService, userService), Roles.EMPLOYEE);
+
+                path("createAccount", () -> {
+                    get(context -> {
+                        //  Retrieve username and password from context body and get assign username to string variable
+                        CreateAccountDTO tempAccount = context.bodyAsClass(CreateAccountDTO.class);
+                        String requestUsername = tempAccount.getUsername();
+
+                        //  Get user object from cookie store
+                        User principal = context.cookieStore("principal");
+
+                        if(!principal.getRoles().contains(Roles.EMPLOYEE)){ //  If logged-in user is not employee, throw error
+                            throw new ForbiddenResponse("User unauthorized to perform request");
+                        }
+                    });
+                });
             });
 
             path("user", () -> {
                 post("login", authController.login);
 
-                crud("viewBalance/{id}", new UserController(accountService, userService), Roles.USER, Roles.EMPLOYEE);
-                crud("deposit/{id}", new UserController(accountService, userService), Roles.USER, Roles.EMPLOYEE);
-                crud("withdraw/{id}", new UserController(accountService, userService), Roles.USER, Roles.EMPLOYEE);
-                crud("transfer/{id}", new UserController(accountService, userService), Roles.USER, Roles.EMPLOYEE);
+                crud("viewBalance/accountNumber/{id}", new UserController(accountService, userService), Roles.USER, Roles.EMPLOYEE);
+                crud("deposit/accountNumber/{id}", new UserController(accountService, userService), Roles.USER, Roles.EMPLOYEE);
+                crud("withdraw/accountNumber/{id}", new UserController(accountService, userService), Roles.USER, Roles.EMPLOYEE);
+                crud("transfer/accountNumber/{id}", new UserController(accountService, userService), Roles.USER, Roles.EMPLOYEE);
             });
 
         });

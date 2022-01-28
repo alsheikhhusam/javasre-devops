@@ -24,7 +24,7 @@ public class AccountServiceTest {
 
     @Test
     public void updateBalance(){
-        AccountDTO expected = new AccountDTO(2, 1, 250, "alsheikh.husam");
+        AccountDTO expected = new AccountDTO(2, "alsheikh.husam", 250, 1);
 
         accountServiceTest.updateBalance(expected);
 
@@ -37,7 +37,7 @@ public class AccountServiceTest {
     public void addAccount(){
         int num = accountServiceTest.save(2, "alsheikh.husam");
 
-        AccountDTO expected = new AccountDTO(2, 1, 200, "alsheikh.husam");
+        AccountDTO expected = new AccountDTO(2, "alsheikh.husam", 200, 1);
         AccountDTO actual = accountServiceTest.getAccount(1);
 
         Assert.assertEquals("GetAccount did not return the correct accountNum", expected.getAccountNum(), actual.getAccountNum());

@@ -25,11 +25,11 @@ public class EmpController implements CrudHandler {
     public void create(@NotNull Context context) {  //  Create Account
         CreateAccountDTO newAccount = context.bodyAsClass(CreateAccountDTO.class);
 
+        // Only allow to open an account for a user if they enter correct user id and username
         //  Allow to create a bank account only if username is a known user
-        if(userService.getUserByUsername(newAccount.getUsername()) == null){    //  If user does not exist
+        if(userService.getUserByUsername(newAccount.getUsername()) == null){
             throw new ForbiddenResponse("Invalid Username - User does not exist");
         }
-
         //  Allow to create a bank account only if userid is a known user
         if(userService.getUserByUsername(newAccount.getUsername()).getId() != newAccount.getUserid()){
             throw new ForbiddenResponse("Invalid User ID - User does not exist");
@@ -46,21 +46,21 @@ public class EmpController implements CrudHandler {
 
     @Override
     public void delete(@NotNull Context context, @NotNull String s) {
-
+        throw new ForbiddenResponse("Function has no implementation");
     }
 
     @Override
     public void getAll(@NotNull Context context) {
-
+        throw new ForbiddenResponse("Function has no implementation");
     }
 
     @Override
     public void getOne(@NotNull Context context, @NotNull String s) {
-
+        throw new ForbiddenResponse("Function has no implementation");
     }
 
     @Override
     public void update(@NotNull Context context, @NotNull String s) {
-
+        throw new ForbiddenResponse("Function has no implementation");
     }
 }

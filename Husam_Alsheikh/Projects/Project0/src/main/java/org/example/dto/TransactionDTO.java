@@ -4,14 +4,20 @@ import java.util.Date;
 
 public class TransactionDTO {
     private Date date;
-    private String username;
     private int userid;
+    private String username;
     private int accountNum;
-    private int depositedAmount;
-    private int withdrawnAmount;
-    private int transferredAmount;
+    private int amount;
 
     public TransactionDTO() {
+    }
+
+    public TransactionDTO(Date date, int userid, String username, int accountNum, int amount) {
+        this.date = date;
+        this.userid = userid;
+        this.username = username;
+        this.accountNum = accountNum;
+        this.amount = amount;
     }
 
     public Date getDate() {
@@ -22,20 +28,20 @@ public class TransactionDTO {
         this.date = date;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
     public int getUserid() {
         return userid;
     }
 
     public void setUserid(int userid) {
         this.userid = userid;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public int getAccountNum() {
@@ -46,27 +52,11 @@ public class TransactionDTO {
         this.accountNum = accountNum;
     }
 
-    public int getDepositedAmount() {
-        return depositedAmount;
+    public int getAmount() {
+        return amount;
     }
 
-    public void setDepositedAmount(int depositedAmount) {
-        this.depositedAmount = depositedAmount;
-    }
-
-    public int getWithdrawnAmount() {
-        return withdrawnAmount;
-    }
-
-    public void setWithdrawnAmount(int withdrawnAmount) {
-        this.withdrawnAmount = withdrawnAmount;
-    }
-
-    public int getTransferredAmount() {
-        return transferredAmount;
-    }
-
-    public void setTransferredAmount(int transferredAmount) {
-        this.transferredAmount = transferredAmount;
+    public void setAmount(int amount) {
+        this.amount = amount;
     }
 }

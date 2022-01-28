@@ -5,11 +5,11 @@ import io.javalin.http.Context;
 import io.javalin.http.ForbiddenResponse;
 import org.example.dto.AccountDTO;
 import org.example.dto.TransferDTO;
+import org.example.models.Roles;
+import org.example.models.User;
 import org.example.services.AccountService;
 import org.example.services.UserService;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Set;
 
 public class UserController implements CrudHandler {
     private AccountService accountService;
@@ -25,25 +25,29 @@ public class UserController implements CrudHandler {
     }
 
     @Override
-    public void getAll(@NotNull Context context) {
+    public void getAll(@NotNull Context context) {  //  Get Transaction History
 
     }
 
     @Override
-    public void getOne(@NotNull Context context, @NotNull String s) {
+    public void getOne(@NotNull Context context, @NotNull String s) {   //  View Balance By Account Number
         int id = Integer.parseInt(s);   //  Account Number
 
-        Set<String> loggers = userService.getLoggers(); //  Logged in users
+        //  Logged in user
+        User logger = context.cookieStore("principal");
 
-        if(loggers.isEmpty()){  //  If no logged-in users throw error
-            throw new ForbiddenResponse("No username found - User not authorized");
+        //  If no logged-in users throw error
+        if(logger == null){
+            throw new ForbiddenResponse("No user found - User not authorized");
         }
 
         AccountDTO accountDTO = accountService.getAccount(id);  //  Get Bank Account based on Account ID
 
-        //  Check to see if account belongs to one of the logged-in users, if not throw error
-        if(!loggers.contains(accountDTO.getUsername())){
-            throw new ForbiddenResponse("User not authorized to view account balance");
+        //  Check to see if account belongs to the logged-in user
+        if(!logger.getRoles().contains(Roles.EMPLOYEE)){
+            if(accountDTO.getUserid() != logger.getId() || !accountDTO.getUsername().equals(logger.getUsername())){
+                throw new ForbiddenResponse("User not authorized to view account balance");
+            }
         }
 
         context.header("Location", "http://localhost:4200/user/viewBalance/" + id);
@@ -52,39 +56,64 @@ public class UserController implements CrudHandler {
     }
 
     @Override
-    public void update(@NotNull Context context, @NotNull String s) {
+    public void update(@NotNull Context context, @NotNull String s) {   //  Transfer, Deposit, and Withdraw
         int id = Integer.parseInt(s);   //  Account Number
 
-        if(context.path().equals("/user/transfer/" + id)){
+        //  Logged in user
+        User logger = context.cookieStore("principal");
+
+        //  Implementation for transfer
+        if(context.path().equals("/user/transfer/accountNumber/" + id)){
+            if(!logger.getRoles().contains(Roles.EMPLOYEE)){
+                //  Get user from account number
+                User accountUser = userService.getUserByUsername(accountService.getAccount(id).getUsername());
+
+                if(accountUser.getId() != logger.getId() || !accountUser.getUsername().equals(logger.getUsername())){
+                    throw new ForbiddenResponse("User not authorized to transfer balance");
+                }
+            }
+
             TransferDTO transferDTO = context.bodyAsClass(TransferDTO.class);
 
-            //  Need to implement authorization of transfer (userid, username and accountNum)
+            //  Get the user that is transferring FROM
+            User fromUser = userService.getUserByUsername(transferDTO.getUsername());
 
-            AccountDTO receiverAccount = accountService.transfer(accountService.getAccount(id), accountService.getAccount(transferDTO.getAccountNum()), transferDTO.getTransferAmount());
+            //  If user id, password, account all match the user with that username; Only then allow balance transfer
+            if(fromUser.getId() == transferDTO.getUserid() && fromUser.getPassword().equals(transferDTO.getPassword()) && fromUser.getAccountsId().contains(transferDTO.getAccountNum())){
+                //  Transfer Balance
+                AccountDTO receiverAccount = accountService.transfer(accountService.getAccount(id), accountService.getAccount(transferDTO.getAccountNum()), transferDTO.getTransferAmount());
 
-            context.json(receiverAccount);
-            return;
+                //  Print receiver's new balance and account details
+                context.json(receiverAccount);
+                return;
+            }
+
+            throw new ForbiddenResponse("Sending User account information is incorrect");
         }
+
+        //  Implementation for deposit and withdraw
 
         int amount = Integer.parseInt(context.body());
 
-        Set<String> loggers = userService.getLoggers(); //  Logged in users
-
-        if(loggers.isEmpty()){  //  If no logged -in users throw error
-            throw new ForbiddenResponse("No username found - User not authorized");
+        //  If no logged -in users throw error
+        if(logger == null){
+            throw new ForbiddenResponse("No user found - User not authorized");
         }
 
         AccountDTO accountDTO = accountService.getAccount(id);  //  Get Bank Account
 
-        //  Check to see if account belongs to one of the logged-in users, if not throw error
-        if(!loggers.contains(accountDTO.getUsername())){
-            throw new ForbiddenResponse("User not authorized to deposit");
+        //  Check to see if account belongs to the logged-in user
+        if(!logger.getRoles().contains(Roles.EMPLOYEE)){
+            if(accountDTO.getUserid() != logger.getId() || !accountDTO.getUsername().equals(logger.getUsername())){
+                throw new ForbiddenResponse("User not authorized to deposit");
+            }
         }
 
-        if(context.path().equals("/user/deposit/" + id)){   //  If deposit path
+        //  Navigate based on path
+        if(context.path().equals("/user/deposit/accountNumber/" + id)){   //  If deposit path
             accountDTO.setBalance(accountDTO.getBalance() + amount);
         }
-        else if(context.path().equals("/user/withdraw/" + id)){ //  If withdraw path
+        else if(context.path().equals("/user/withdraw/accountNumber/" + id)){ //  If withdraw path
             if(accountDTO.getBalance() < amount){
                 throw new ArithmeticException("Amount to be withdrawn is greater than balance");
             }
@@ -101,11 +130,11 @@ public class UserController implements CrudHandler {
 
     @Override
     public void create(@NotNull Context context) {
-        throw new ForbiddenResponse("User not authorized");
+        throw new ForbiddenResponse("Function has no implementation");
     }
 
     @Override
     public void delete(@NotNull Context context, @NotNull String s) {
-        throw new ForbiddenResponse("User not authorized");
+        throw new ForbiddenResponse("Function has no implementation");
     }
 }

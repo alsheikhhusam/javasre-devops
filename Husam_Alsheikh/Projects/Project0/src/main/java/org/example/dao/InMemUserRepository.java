@@ -3,9 +3,8 @@ package org.example.dao;
 import org.example.models.Roles;
 import org.example.models.User;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import javax.management.relation.Role;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -17,9 +16,9 @@ public class InMemUserRepository implements UserRepository {
         idGen = new AtomicInteger(1);
         users = new HashMap<>();
 
-        users.put(idGen.get(), new User(idGen.getAndIncrement(), "husam.alsheikh", "7841", new Roles[]{Roles.EMPLOYEE}));
-        users.put(idGen.get(), new User(idGen.getAndIncrement(), "alsheikh.husam", "7841", new Roles[]{Roles.USER}));
-        users.put(idGen.get(), new User(idGen.getAndIncrement(), "john.doe", "7841", new Roles[]{Roles.USER}));
+        users.put(idGen.get(), new User(idGen.getAndIncrement(), "husam.alsheikh", "7841", new HashSet<Roles>(Arrays.asList(Roles.EMPLOYEE))));
+        users.put(idGen.get(), new User(idGen.getAndIncrement(), "alsheikh.husam", "7841", new HashSet<Roles>(Arrays.asList(Roles.USER))));
+        users.put(idGen.get(), new User(idGen.getAndIncrement(), "john.doe", "7841", new HashSet<Roles>(Arrays.asList(Roles.USER))));
     }
 
     @Override
