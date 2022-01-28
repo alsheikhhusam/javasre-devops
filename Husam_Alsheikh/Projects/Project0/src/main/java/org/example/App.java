@@ -103,6 +103,7 @@ public class App
                 crud("deposit/accountNumber/{id}", new UserController(accountService, userService), Roles.USER, Roles.EMPLOYEE);
                 crud("withdraw/accountNumber/{id}", new UserController(accountService, userService), Roles.USER, Roles.EMPLOYEE);
                 crud("transfer/accountNumber/{id}", new UserController(accountService, userService), Roles.USER, Roles.EMPLOYEE);
+                crud("getHistory/userID/{id}", new UserController(accountService, userService), Roles.USER, Roles.EMPLOYEE);
             });
 
         });

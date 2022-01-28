@@ -1,5 +1,7 @@
 package org.example.models;
 
+import org.example.dto.TransactionDTO;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -10,9 +12,11 @@ public class User {
     private String password;
     private List<Integer> accountsId;
     private Set<Roles> roles;
+    private List<TransactionDTO> transactions;
 
     public User(){
         accountsId = new ArrayList<>();
+        transactions = new ArrayList<>();
     }
 
     public User(int id, String username, String password, List<Integer> accountsId, Set<Roles> roles) {
@@ -30,6 +34,7 @@ public class User {
         this.roles = roles;
 
         accountsId = new ArrayList<>();
+        transactions = new ArrayList<>();
     }
 
     public int getId() {
@@ -70,5 +75,17 @@ public class User {
 
     public void setAccountsId(List<Integer> accountsId) {
         this.accountsId = accountsId;
+    }
+
+    public List<TransactionDTO> getTransactions() {
+        return transactions;
+    }
+
+    public void setTransactions(List<TransactionDTO> transactions) {
+        this.transactions = transactions;
+    }
+
+    public void addTransaction(TransactionDTO transactionDTO){
+        transactions.add(transactionDTO);
     }
 }

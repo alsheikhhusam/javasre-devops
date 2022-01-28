@@ -4,12 +4,18 @@ import io.javalin.apibuilder.CrudHandler;
 import io.javalin.http.Context;
 import io.javalin.http.ForbiddenResponse;
 import org.example.dto.AccountDTO;
+import org.example.dto.TransactionDTO;
 import org.example.dto.TransferDTO;
 import org.example.models.Roles;
 import org.example.models.User;
 import org.example.services.AccountService;
 import org.example.services.UserService;
 import org.jetbrains.annotations.NotNull;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 
 public class UserController implements CrudHandler {
     private AccountService accountService;
@@ -25,7 +31,7 @@ public class UserController implements CrudHandler {
     }
 
     @Override
-    public void getAll(@NotNull Context context) {  //  Get Transaction History
+    public void getAll(@NotNull Context context) {
 
     }
 
@@ -41,6 +47,25 @@ public class UserController implements CrudHandler {
             throw new ForbiddenResponse("No user found - User not authorized");
         }
 
+        //  Check to see if account belongs to the logged-in user
+        if(context.path().equals("/user/getHistory/userID/" + id)){
+            if(!logger.getRoles().contains(Roles.EMPLOYEE)){
+                if(logger.getId() != id || !logger.getUsername().equals(userService.getUserByID(id).getUsername())){
+                    throw new ForbiddenResponse("User not authorized to view transaction history");
+                }
+            }
+
+            //  Get transaction list and output
+            List<TransactionDTO> transactions = userService.getUserByID(id).getTransactions();
+            if(transactions.isEmpty()){
+                context.result("No transactions to show!");
+                return;
+            }
+
+            context.json(transactions);
+            return;
+        }
+
         AccountDTO accountDTO = accountService.getAccount(id);  //  Get Bank Account based on Account ID
 
         //  Check to see if account belongs to the logged-in user
@@ -49,6 +74,10 @@ public class UserController implements CrudHandler {
                 throw new ForbiddenResponse("User not authorized to view account balance");
             }
         }
+
+        //  Add Transaction
+        TransactionDTO transactionDTO = new TransactionDTO(accountDTO.getUserid(), accountDTO.getUsername(), accountDTO.getAccountNum(), "Balance View");
+        userService.updateUserTransaction(transactionDTO);
 
         context.header("Location", "http://localhost:4200/user/viewBalance/" + id);
         context.status(201);
@@ -85,6 +114,11 @@ public class UserController implements CrudHandler {
 
                 //  Print receiver's new balance and account details
                 context.json(receiverAccount);
+
+                //  Add Transaction
+                TransactionDTO transactionDTO = new TransactionDTO(fromUser.getId(), fromUser.getUsername(), id, transferDTO.getTransferAmount(), "Balance Transfer");
+                userService.updateUserTransaction(transactionDTO);
+
                 return;
             }
 
@@ -112,6 +146,12 @@ public class UserController implements CrudHandler {
         //  Navigate based on path
         if(context.path().equals("/user/deposit/accountNumber/" + id)){   //  If deposit path
             accountDTO.setBalance(accountDTO.getBalance() + amount);
+            accountService.updateBalance(accountDTO);
+
+            //  Add Transaction
+            TransactionDTO transactionDTO = new TransactionDTO(accountDTO.getUserid(), accountDTO.getUsername(), id, amount, "Balance Deposit");
+            userService.updateUserTransaction(transactionDTO);
+
         }
         else if(context.path().equals("/user/withdraw/accountNumber/" + id)){ //  If withdraw path
             if(accountDTO.getBalance() < amount){
@@ -119,6 +159,11 @@ public class UserController implements CrudHandler {
             }
 
             accountDTO.setBalance(accountDTO.getBalance() - amount);
+            accountService.updateBalance(accountDTO);
+
+            //  Add Transaction
+            TransactionDTO transactionDTO = new TransactionDTO(accountDTO.getUserid(), accountDTO.getUsername(), id, amount, "Balance Withdraw");
+            userService.updateUserTransaction(transactionDTO);
         }
 
         accountService.updateBalance(accountDTO);

@@ -1,30 +1,48 @@
 package org.example.dto;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class TransactionDTO {
-    private Date date;
+    private String date;
     private int userid;
     private String username;
     private int accountNum;
     private int amount;
+    private String description;
 
     public TransactionDTO() {
     }
 
-    public TransactionDTO(Date date, int userid, String username, int accountNum, int amount) {
-        this.date = date;
+    public TransactionDTO(int userid, String username, int accountNum, String description) {
+        DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss aaa");
+        Date dateTime = new Date();
+        date = dateFormat.format(dateTime);
+
+        this.userid = userid;
+        this.username = username;
+        this.accountNum = accountNum;
+        this.description = description;
+    }
+
+    public TransactionDTO(int userid, String username, int accountNum, int amount, String description) {
+        DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss aaa");
+        Date dateTime = new Date();
+        date = dateFormat.format(dateTime);
+
         this.userid = userid;
         this.username = username;
         this.accountNum = accountNum;
         this.amount = amount;
+        this.description = description;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 
@@ -58,5 +76,13 @@ public class TransactionDTO {
 
     public void setAmount(int amount) {
         this.amount = amount;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

@@ -30,8 +30,7 @@ public class InMemUserRepository implements UserRepository {
     }
 
     @Override
-    public Integer save(User obj) { //  Save updated version of user
-        users.replace(obj.getId(), obj);
+    public Integer save(User obj) {
         return null;
     }
 
@@ -62,7 +61,7 @@ public class InMemUserRepository implements UserRepository {
     }
 
     @Override
-    public void update(User obj) {
-
+    public void update(User obj) {  //  Update user
+        users.replace(obj.getId(), obj);
     }
 }

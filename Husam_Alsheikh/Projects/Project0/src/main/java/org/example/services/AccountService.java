@@ -30,17 +30,15 @@ public class AccountService {
         return accountRepository.getById(to.getAccountNum());
     }
 
-    public int getBalance(int accountNum){
-        AccountDTO temp = accountRepository.getById(accountNum);
-
-        return temp.getBalance();
-    }
-
     public void updateBalance(AccountDTO newBalance){
         accountRepository.update(newBalance);
     }
 
     public AccountDTO getAccount(int id){
         return accountRepository.getById(id);
+    }
+
+    public void updateAccount(AccountDTO accountDTO){
+        accountRepository.update(accountDTO);
     }
 }
