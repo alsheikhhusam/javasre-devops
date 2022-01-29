@@ -3,14 +3,19 @@ package org.example;
 import io.javalin.Javalin;
 import io.javalin.http.ForbiddenResponse;
 import io.jsonwebtoken.Claims;
+import org.example.controllers.AccountController;
 import org.example.controllers.AuthController;
 import org.example.controllers.EmpController;
-import org.example.controllers.UserController;
 import org.example.dao.*;
+import org.example.database.ConnectionManager;
+import org.example.database.PostgresConnectionManager;
 import org.example.dto.AccountDTO;
 import org.example.models.User;
 import org.example.models.Roles;
 import org.example.services.*;
+
+import java.sql.SQLException;
+import java.util.Properties;
 
 import static io.javalin.apibuilder.ApiBuilder.*;
 
@@ -18,15 +23,29 @@ public class App
 {
     public static void main( String[] args )
     {
-        Repository<Integer, AccountDTO> accountRepo = new InMemAccountDao();
-        AccountService accountService = new AccountService(accountRepo);
-        UserRepository userRepository = new InMemUserRepository();
-        UserService userService = new UserService(userRepository);
+        Properties connectionManagerProps = new Properties();
+        connectionManagerProps.setProperty("db.username", "postgres");
+        connectionManagerProps.setProperty("db.password", "7841@1487");
+        connectionManagerProps.setProperty("db.url", "jdbc:postgresql://35.225.245.98:5432/postgres");
 
+        ConnectionManager connectionManager = new PostgresConnectionManager();
+        try {
+            connectionManager.init(connectionManagerProps);
+            System.out.println("Successfully Connected to the DB");
+        } catch (SQLException throwables) {
+            throw new IllegalStateException(throwables);
+        }
+
+        Repository<Integer, AccountDTO> accountRepo = new InMemAccountDao();
+        UserRepository userRepo = new InMemUserRepository();
+
+        UserService userService = new UserService(userRepo);
+        AccountService accountService = new AccountService(accountRepo);
         JWTService tokenService = new JWTService();
         AuthService authService = new AuthService(userService, tokenService);
-        AuthController authController = new AuthController(authService);
 
+        AuthController authController = new AuthController(authService);
+        AccountController accountController = new AccountController(accountService, userService);
 
         Javalin app = Javalin.create(javalinConfig -> {
             javalinConfig.accessManager((handler, context, requiredRoles) -> {
@@ -94,13 +113,15 @@ public class App
             path("user", () -> {
                 post("login", authController.login);
 
-                crud("viewBalance/accountNumber/{id}", new UserController(accountService, userService), Roles.USER, Roles.EMPLOYEE);
-                crud("deposit/accountNumber/{id}", new UserController(accountService, userService), Roles.USER, Roles.EMPLOYEE);
-                crud("withdraw/accountNumber/{id}", new UserController(accountService, userService), Roles.USER, Roles.EMPLOYEE);
-                crud("transfer/accountNumber/{id}", new UserController(accountService, userService), Roles.USER, Roles.EMPLOYEE);
-                crud("getHistory/userID/{id}", new UserController(accountService, userService), Roles.USER, Roles.EMPLOYEE);
+                get("history/userId/{id}", accountController.getTransactionHistory, Roles.USER, Roles.EMPLOYEE);
             });
 
+            path("accounts", () -> {
+                get("viewBalance/accountNum/{acctId}", accountController.getBalance, Roles.USER, Roles.EMPLOYEE);
+                patch("deposit/accountNum/{acctId}", accountController.deposit, Roles.USER, Roles.EMPLOYEE);
+                patch("withdraw/accountNum/{acctId}", accountController.withdraw, Roles.USER, Roles.EMPLOYEE);
+                patch("transfer/userId/{id}", accountController.transfer, Roles.USER, Roles.EMPLOYEE);
+            });
         });
     }
 }
