@@ -38,6 +38,15 @@ public class TransactionDTO {
         this.description = description;
     }
 
+    public TransactionDTO(String date, int userid, String username, int accountNum, int amount, String description) {
+        this.date = date;
+        this.userid = userid;
+        this.username = username;
+        this.accountNum = accountNum;
+        this.amount = amount;
+        this.description = description;
+    }
+
     public String getDate() {
         return date;
     }

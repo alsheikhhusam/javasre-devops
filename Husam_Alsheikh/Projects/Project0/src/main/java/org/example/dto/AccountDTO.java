@@ -1,10 +1,16 @@
 package org.example.dto;
 
+import java.util.Objects;
+
 public class AccountDTO {
     private int userid;
     private String username;
     private int balance;
     private int accountNum;
+
+    public AccountDTO() {
+
+    }
 
     public AccountDTO(int userid, String username, int balance, int accountNum) {
         this.userid = userid;
@@ -50,5 +56,18 @@ public class AccountDTO {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AccountDTO that = (AccountDTO) o;
+        return accountNum == that.accountNum;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(accountNum);
     }
 }

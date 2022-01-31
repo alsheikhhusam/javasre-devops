@@ -14,7 +14,8 @@ public class UserService {
     }
 
     public User getUserByUsername(String username) {
-        return userRepository.getByUsername(username);
+        User user = userRepository.getByUsername(username);
+        return user;
     }
 
     public User getUserByID(int userid){ return userRepository.getById(userid); }
@@ -32,14 +33,10 @@ public class UserService {
 
     public void updateUserTransaction(TransactionDTO transactionDTO){
         //  Get User and add the transaction
-        User updatedUser = userRepository.getByUsername(transactionDTO.getUsername());
+        User updatedUser = userRepository.getById(transactionDTO.getUserid());
         updatedUser.addTransaction(transactionDTO);
 
-        //  Update user
-        userRepository.update(updatedUser);
-    }
-
-    public void updateUser(User user){
-        userRepository.update(user);
+        //  Add Transaction
+        userRepository.save(updatedUser);
     }
 }

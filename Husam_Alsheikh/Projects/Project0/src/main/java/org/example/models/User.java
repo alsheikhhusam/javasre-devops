@@ -4,6 +4,7 @@ import org.example.dto.TransactionDTO;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 public class User {
@@ -19,14 +20,6 @@ public class User {
         transactions = new ArrayList<>();
     }
 
-    public User(int id, String username, String password, List<Integer> accountsId, Set<Roles> roles) {
-        this.id = id;
-        this.username = username;
-        this.password = password;
-        this.accountsId = accountsId;
-        this.roles = roles;
-    }
-
     public User(int id, String username, String password, Set<Roles> roles) {
         this.id = id;
         this.username = username;
@@ -35,6 +28,23 @@ public class User {
 
         accountsId = new ArrayList<>();
         transactions = new ArrayList<>();
+    }
+
+    public User(int id, String username, String password, List<Integer> accountsId, Set<Roles> roles) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.accountsId = accountsId;
+        this.roles = roles;
+    }
+
+    public User(int id, String username, String password, List<Integer> accountsId, Set<Roles> roles, List<TransactionDTO> transactions) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.accountsId = accountsId;
+        this.roles = roles;
+        this.transactions = transactions;
     }
 
     public int getId() {
@@ -87,5 +97,18 @@ public class User {
 
     public void addTransaction(TransactionDTO transactionDTO){
         transactions.add(transactionDTO);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return id == user.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

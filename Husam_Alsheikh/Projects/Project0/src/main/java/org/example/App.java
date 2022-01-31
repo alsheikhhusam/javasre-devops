@@ -36,8 +36,8 @@ public class App
             throw new IllegalStateException(throwables);
         }
 
-        Repository<Integer, AccountDTO> accountRepo = new InMemAccountDao();
-        UserRepository userRepo = new InMemUserRepository();
+        Repository<Integer, AccountDTO> accountRepo = new PostgresAccountDao(connectionManager);
+        UserRepository userRepo = new PostgresUserDao(connectionManager);
 
         UserService userService = new UserService(userRepo);
         AccountService accountService = new AccountService(accountRepo);
@@ -96,14 +96,14 @@ public class App
             path("employee", () -> {
                 post("login", authController.login);
 
-                crud("createAccount/{id}", new EmpController(accountService, userService), Roles.EMPLOYEE);
+                crud("createAccount/{id}", new EmpController(accountService, userService), Roles.ROLE_ADMIN);
 
                 path("createAccount", () -> {
                     get(context -> {
                         //  Get user object from cookie store
                         User principal = context.cookieStore("principal");
 
-                        if(!principal.getRoles().contains(Roles.EMPLOYEE)){ //  If logged-in user is not employee, throw error
+                        if(!principal.getRoles().contains(Roles.ROLE_ADMIN)){ //  If logged-in user is not employee, throw error
                             throw new ForbiddenResponse("User unauthorized to perform request");
                         }
                     });
@@ -113,14 +113,14 @@ public class App
             path("user", () -> {
                 post("login", authController.login);
 
-                get("history/userId/{id}", accountController.getTransactionHistory, Roles.USER, Roles.EMPLOYEE);
+                get("history/userId/{id}", accountController.getTransactionHistory, Roles.ROLE_USER, Roles.ROLE_ADMIN);
             });
 
             path("accounts", () -> {
-                get("viewBalance/accountNum/{acctId}", accountController.getBalance, Roles.USER, Roles.EMPLOYEE);
-                patch("deposit/accountNum/{acctId}", accountController.deposit, Roles.USER, Roles.EMPLOYEE);
-                patch("withdraw/accountNum/{acctId}", accountController.withdraw, Roles.USER, Roles.EMPLOYEE);
-                patch("transfer/userId/{id}", accountController.transfer, Roles.USER, Roles.EMPLOYEE);
+                get("viewBalance/accountNum/{acctId}", accountController.getBalance, Roles.ROLE_USER, Roles.ROLE_ADMIN);
+                patch("deposit/accountNum/{acctId}", accountController.deposit, Roles.ROLE_USER, Roles.ROLE_ADMIN);
+                patch("withdraw/accountNum/{acctId}", accountController.withdraw, Roles.ROLE_USER, Roles.ROLE_ADMIN);
+                patch("transfer/userId/{id}", accountController.transfer, Roles.ROLE_USER, Roles.ROLE_ADMIN);
             });
         });
     }

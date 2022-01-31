@@ -1,6 +1,5 @@
 package org.example.controllers;
 
-import io.javalin.http.Context;
 import io.javalin.http.ForbiddenResponse;
 import io.javalin.http.Handler;
 import org.example.dto.AccountDTO;
@@ -35,7 +34,7 @@ public class AccountController {
         }
 
         //  Check to see if account belongs to the logged-in user or a
-        if(!logger.getRoles().contains(Roles.EMPLOYEE)){
+        if(!logger.getRoles().contains(Roles.ROLE_ADMIN)){
             if(accountDTO.getUserid() != logger.getId() || !accountDTO.getUsername().equals(logger.getUsername())){
                 throw new ForbiddenResponse("User not authorized to view account balance");
             }
@@ -62,7 +61,7 @@ public class AccountController {
         }
 
         //  Check if Employee or account belongs to the logged-in user
-        if(!loggedUser.getRoles().contains(Roles.EMPLOYEE)){
+        if(!loggedUser.getRoles().contains(Roles.ROLE_ADMIN)){
             if(accountDTO.getUserid() != loggedUser.getId() || !accountDTO.getUsername().equals(loggedUser.getUsername())){
                 throw new ForbiddenResponse("User not authorized to deposit");
             }
@@ -93,7 +92,7 @@ public class AccountController {
         }
 
         //  Check if Employee or account belongs to the logged-in user
-        if(!loggedUser.getRoles().contains(Roles.EMPLOYEE)){
+        if(!loggedUser.getRoles().contains(Roles.ROLE_ADMIN)){
             if(accountDTO.getUserid() != loggedUser.getId() || !accountDTO.getUsername().equals(loggedUser.getUsername())){
                 throw new ForbiddenResponse("User not authorized to withdraw");
             }
@@ -122,7 +121,7 @@ public class AccountController {
         }
 
         //  Authenticate User - Make Sure user is employee or account owner
-        if(!loggedUser.getRoles().contains(Roles.EMPLOYEE)){
+        if(!loggedUser.getRoles().contains(Roles.ROLE_ADMIN)){
             User accountUser = userService.getUserByID(userid);
 
             if(accountUser.getId() != loggedUser.getId() || !accountUser.getUsername().equals(loggedUser.getUsername())){
@@ -166,7 +165,7 @@ public class AccountController {
         }
 
         //  Check to see if account belongs to the logged-in user or a
-        if(!logger.getRoles().contains(Roles.EMPLOYEE)){
+        if(!logger.getRoles().contains(Roles.ROLE_ADMIN)){
             if(accountDTO.getUserid() != logger.getId() || !accountDTO.getUsername().equals(logger.getUsername())){
                 throw new ForbiddenResponse("User not authorized to view account balance");
             }

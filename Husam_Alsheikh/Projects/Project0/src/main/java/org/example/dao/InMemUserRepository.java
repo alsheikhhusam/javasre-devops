@@ -3,7 +3,6 @@ package org.example.dao;
 import org.example.models.Roles;
 import org.example.models.User;
 
-import javax.management.relation.Role;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -16,9 +15,9 @@ public class InMemUserRepository implements UserRepository {
         idGen = new AtomicInteger(1);
         users = new HashMap<>();
 
-        users.put(idGen.get(), new User(idGen.getAndIncrement(), "husam.alsheikh", "7841", new HashSet<>(Collections.singletonList(Roles.EMPLOYEE))));
-        users.put(idGen.get(), new User(idGen.getAndIncrement(), "alsheikh.husam", "7841", new HashSet<>(Collections.singletonList(Roles.USER))));
-        users.put(idGen.get(), new User(idGen.getAndIncrement(), "john.doe", "7841", new HashSet<>(Collections.singletonList(Roles.USER))));
+        users.put(idGen.get(), new User(idGen.getAndIncrement(), "husam.alsheikh", "7841", new HashSet<>(Collections.singletonList(Roles.ROLE_ADMIN))));
+        users.put(idGen.get(), new User(idGen.getAndIncrement(), "alsheikh.husam", "7841", new HashSet<>(Collections.singletonList(Roles.ROLE_USER))));
+        users.put(idGen.get(), new User(idGen.getAndIncrement(), "john.doe", "7841", new HashSet<>(Collections.singletonList(Roles.ROLE_USER))));
     }
 
     @Override
