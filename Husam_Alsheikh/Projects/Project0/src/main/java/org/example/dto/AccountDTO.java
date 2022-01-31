@@ -19,7 +19,7 @@ public class AccountDTO {
         this.accountNum = accountNum;
     }
 
-    public AccountDTO(int userid, int accountNum, String username){
+    public AccountDTO(int userid, int balance, String username){
         this.userid = userid;
         this.accountNum = accountNum;
         this.username = username;

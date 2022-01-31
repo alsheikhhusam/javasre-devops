@@ -22,7 +22,7 @@ public class PostgresUserDao implements UserRepository{
     @Override
     public Integer save(User obj) { //  Insert transaction
         try(Connection conn = this.connectionManager.getConnection()){
-            TransactionDTO transactionDTO = obj.getTransactions().get(obj.getTransactions().size());
+            TransactionDTO transactionDTO = obj.getTransactions().get(obj.getTransactions().size() - 1);
             String sql = "insert into Transactions(username, date, amount, description, accountNum, userId) values (?, ?, ?, ?, ?, ?) returning transactionId";
 
             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);

@@ -23,7 +23,7 @@ public class PostgresAccountDao implements Repository<Integer, AccountDTO> {
             ps.setInt(1, obj.getBalance());
             ps.setString(2, obj.getUsername());
             ps.setInt(3, obj.getUserid());
-            ps.executeQuery();
+            ps.executeUpdate();
 
             ResultSet keys = ps.getGeneratedKeys();
             keys.next();
@@ -36,25 +36,7 @@ public class PostgresAccountDao implements Repository<Integer, AccountDTO> {
 
     @Override
     public List<AccountDTO> getAll() {
-        try{
-            Connection conn = this.connectionManager.getConnection();
-            List<AccountDTO> accounts = new ArrayList<>();
-
-            String sql = "SELECT * FROM Accounts";
-
-            PreparedStatement ps = conn.prepareStatement(sql);
-
-            ResultSet rs = ps.executeQuery();
-
-            while(rs.next()){
-                System.out.println(rs.getInt("accountNum") + ", " + rs.getInt("balance") + ", " + rs.getString("username") + ", " + rs.getInt("userId"));
-            }
-
-            return accounts;
-        } catch (SQLException ex){
-            System.out.println(ex);
-            return null;
-        }
+        return null;
     }
 
     @Override
