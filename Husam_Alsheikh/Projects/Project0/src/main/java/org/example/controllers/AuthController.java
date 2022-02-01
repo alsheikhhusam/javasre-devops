@@ -13,6 +13,9 @@ public class AuthController {
         this.authService = authService;
     }
 
+    /**
+     * Handles Logins
+     */
     public Handler login = (ctx) -> {
         LoginRequest loginRequest = ctx.bodyAsClass(LoginRequest.class);
         String token = authService.authenticate(loginRequest.getUsername(), loginRequest.getPassword());

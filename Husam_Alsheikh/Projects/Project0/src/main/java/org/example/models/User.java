@@ -99,6 +99,12 @@ public class User {
         transactions.add(transactionDTO);
     }
 
+    /**
+     * Overridden equals method
+     * @author Husam Alsheikh
+     * @param o user object
+     * @return returns if objects are equal
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -107,6 +113,11 @@ public class User {
         return id == user.id;
     }
 
+    /**
+     * Overridden hashcode method
+     * @author Husam Alsheikh
+     * @return returns id
+     */
     @Override
     public int hashCode() {
         return Objects.hash(id);

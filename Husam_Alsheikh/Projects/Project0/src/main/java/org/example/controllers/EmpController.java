@@ -17,6 +17,11 @@ public class EmpController implements CrudHandler {
         this.userService = userService;
     }
 
+    /**
+     * Handles account creation. Uploads account to repository
+     * @author Husam Alsheikh
+     * @param context Context
+     */
     @Override
     public void create(@NotNull Context context) {  //  Create Account
         CreateAccountDTO newAccount = context.bodyAsClass(CreateAccountDTO.class);
@@ -40,21 +45,44 @@ public class EmpController implements CrudHandler {
         context.json(accountService.getAccount(accountNum));
     }
 
+    /**
+     * No Implementation
+     * @author Husam Alsheikh
+     * @param context Context
+     * @param s url parameter
+     */
     @Override
     public void delete(@NotNull Context context, @NotNull String s) {
         throw new ForbiddenResponse("Function has no implementation");
     }
 
+    /**
+     * No Implementation
+     * @author Husam Alsheikh
+     * @param context Context
+     */
     @Override
     public void getAll(@NotNull Context context) {
         throw new ForbiddenResponse("Function has no implementation");
     }
 
+    /**
+     * No Implementation
+     * @author Husam Alsheikh
+     * @param context Context
+     * @param s url parameter
+     */
     @Override
     public void getOne(@NotNull Context context, @NotNull String s) {
         throw new ForbiddenResponse("Function has no implementation");
     }
 
+    /**
+     * No Implementation
+     * @author Husam Alsheikh
+     * @param context Context
+     * @param s url parameter
+     */
     @Override
     public void update(@NotNull Context context, @NotNull String s) {
         throw new ForbiddenResponse("Function has no implementation");

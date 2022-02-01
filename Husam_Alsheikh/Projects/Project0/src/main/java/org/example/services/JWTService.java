@@ -19,6 +19,13 @@ public class JWTService {
         byte[] secretBytes = DatatypeConverter.parseBase64Binary(SECRET);
         key = new SecretKeySpec(secretBytes, SIGNING_ALGO.getJcaName());
     }
+
+    /**
+     * Method to generate token
+     * @author Husam Alsheikh
+     * @param subject username to generate unique token
+     * @return returns generated token
+     */
     public String generate(String subject) {
         Date now = new Date(System.currentTimeMillis());
         return Jwts.builder()
@@ -28,11 +35,16 @@ public class JWTService {
                 .compact();
     }
 
+    /**
+     * Method to decode token
+     * @author Husam Alsheikh
+     * @param token token to be decoded
+     * @return returns if token has been decoded
+     */
     public Claims decode(String token) {
         return Jwts.parser()
                 .setSigningKey(DatatypeConverter.parseBase64Binary(SECRET))
                 .parseClaimsJws(token)
                 .getBody();
     }
-
 }

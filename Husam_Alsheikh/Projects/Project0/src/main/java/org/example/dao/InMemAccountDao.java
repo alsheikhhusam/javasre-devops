@@ -19,37 +19,74 @@ public class InMemAccountDao implements Repository<Integer, AccountDTO>{   //  <
         accounts.put(idGen.get(), new AccountDTO(idGen.get(), "alsheikh.husam", 200, idGen.getAndIncrement()));
     }
 
+    /**
+     * Method to save accounts
+     * @author Husam Alsheikh
+     * @param obj account to be saved
+     * @return returns account number
+     */
     @Override
     public Integer save(AccountDTO obj) {   //  Save/Create new account to repository
         accounts.put(idGen.get(), obj);
         return idGen.getAndIncrement();
     }
 
+    /**
+     * No Implementation
+     * @author Husam Alsheikh
+     * @return returns null
+     */
     @Override
     public List<AccountDTO> getAll() {
         return null;
     }
 
+    /**
+     * Method to get account by id
+     * @author Husam Alsheikh
+     * @param integer account number
+     * @return returns account
+     */
     @Override
     public AccountDTO getById(Integer integer) {
         return accounts.get(integer);
     }
 
+    /**
+     * No Implementation
+     * @author Husam Alsheikh
+     * @param obj account
+     */
     @Override
     public void delete(AccountDTO obj) {
 
     }
 
+    /**
+     * No Implementation
+     * @author Husam Alsheikh
+     * @param integer account number
+     */
     @Override
     public void deleteById(Integer integer) {
 
     }
 
+    /**
+     * Method to update account
+     * @author Husam Alsheikh
+     * @param obj account with updated information
+     */
     @Override
     public void update(AccountDTO obj) {
         accounts.replace(obj.getAccountNum(), obj);
     }
 
+    /**
+     * Method to return current id
+     * @author Husam Alsheikh
+     * @return returns id
+     */
     @Override
     public Integer getId() {
         return idGen.get();

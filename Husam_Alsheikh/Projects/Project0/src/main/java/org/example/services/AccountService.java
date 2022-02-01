@@ -7,16 +7,13 @@ public class AccountService {
     Repository<Integer, AccountDTO> accountRepository;
 
 
-    /**
-     * @Author Husam Alsheikh
-     * @param accountRepository account repository (PostgresAccountDao)
-     */
     public AccountService(Repository<Integer, AccountDTO> accountRepository) {
         this.accountRepository = accountRepository;
     }
 
     /**
-     * @Author Husam Alsheikh
+     * Method to save account to database
+     * @author Husam Alsheikh
      * @param userId userid of the user that the account belongs to
      * @param name username of the user that the account belongs to
      * @return returns account number of the saved account
@@ -27,7 +24,8 @@ public class AccountService {
     }
 
     /**
-     * @Author Husam Alsheikh
+     * Method to transfer balance from one account to another
+     * @author Husam Alsheikh
      * @param from account that is sending the balance
      * @param to account that is receiving the balance
      * @param amount amount which is being transferred
@@ -46,23 +44,21 @@ public class AccountService {
     }
 
     /**
-     * @Author Husam Alsheikh
-     * @param newBalance Account with the updated new balance
+     * Method to update balance for an account
+     * @author Husam Alsheikh
+     * @param newBalance account with the updated new balance
      */
     public void updateBalance(AccountDTO newBalance){
         accountRepository.update(newBalance);
     }
 
     /**
-     * @Author  Husam Alsheikh
+     * Method to return account using account number
+     * @author  Husam Alsheikh
      * @param id account number
      * @return returns the account with the account number of the parameter
      */
     public AccountDTO getAccount(int id){
         return accountRepository.getById(id);
-    }
-
-    public void updateAccount(AccountDTO accountDTO){
-        accountRepository.update(accountDTO);
     }
 }

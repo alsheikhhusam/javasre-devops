@@ -13,14 +13,32 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
+    /**
+     * Method to get user by username
+     * @author Husam Alsheikh
+     * @param username username of user
+     * @return returns User
+     */
     public User getUserByUsername(String username) {
         User user = userRepository.getByUsername(username);
         return user;
     }
 
+    /**
+     * Method to get user by ID
+     * @author Husam Alsheikh
+     * @param userid id of user
+     * @return returns user
+     */
     public User getUserByID(int userid){ return userRepository.getById(userid); }
 
-    public void addAccount(int accountNum, int userid){ //  Add account to user and update user
+    /**
+     * Method to add account to user and update database
+     * @author Husam Alsheikh
+     * @param accountNum account's account number
+     * @param userid user id of the user that the account belongs to
+     */
+    public void addAccount(int accountNum, int userid){
         User user = userRepository.getById(userid); //  Get user by id
 
         //  Get accounts from user
@@ -31,6 +49,11 @@ public class UserService {
         userRepository.update(user);
     }
 
+    /**
+     * Method to add transaction to database
+     * @author Husam Alsheikh
+     * @param transactionDTO transaction object containing transaction details
+     */
     public void updateUserTransaction(TransactionDTO transactionDTO){
         //  Get User and add the transaction
         User updatedUser = userRepository.getById(transactionDTO.getUserid());

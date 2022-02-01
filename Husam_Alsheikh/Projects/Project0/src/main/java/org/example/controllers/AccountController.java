@@ -21,6 +21,9 @@ public class AccountController {
         this.userService = userService;
     }
 
+    /**
+     * Gets balance from account
+     */
     public Handler getBalance = (context) -> {
         int acctId = context.pathParamAsClass("acctId", Integer.class).get();
         AccountDTO accountDTO = accountService.getAccount(acctId);  //  Get Bank Account based on Account ID
@@ -47,6 +50,9 @@ public class AccountController {
         context.result(String.valueOf(accountDTO.getBalance()));
     };
 
+    /**
+     * Deposits balance into account
+     */
     public Handler deposit = (context) ->{
         int amount = Integer.parseInt(context.body());
         int acctId = context.pathParamAsClass("acctId", Integer.class).get();
@@ -78,6 +84,9 @@ public class AccountController {
         context.json(accountDTO);
     };
 
+    /**
+     * Withdraws balance from account
+     */
     public Handler withdraw = (context) -> {
         int amount = Integer.parseInt(context.body());
         int acctId = context.pathParamAsClass("acctId", Integer.class).get();
@@ -109,6 +118,9 @@ public class AccountController {
         context.json(accountDTO);
     };
 
+    /**
+     * Transfers balance between accounts
+     */
     public Handler transfer = (context) -> {
         int userid = context.pathParamAsClass("id", Integer.class).get();
 
@@ -152,6 +164,9 @@ public class AccountController {
         throw new ForbiddenResponse("Sending User account information is incorrect");
     };
 
+    /**
+     * Gets transaction history
+     */
     public Handler getTransactionHistory = (context) -> {
         int id = context.pathParamAsClass("id", Integer.class).get();
         AccountDTO accountDTO = accountService.getAccount(id);  //  Get Bank Account based on Account ID

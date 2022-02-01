@@ -1,7 +1,6 @@
 package org.example.dao;
 
 import org.example.database.ConnectionManager;
-import org.example.dto.AccountDTO;
 import org.example.dto.TransactionDTO;
 import org.example.models.Roles;
 import org.example.models.User;
@@ -19,6 +18,12 @@ public class PostgresUserDao implements UserRepository{
         this.connectionManager = connectionManager;
     }
 
+    /**
+     * Method to save transactions
+     * @author Husam Alsheikh
+     * @param obj updated user
+     * @return returns transaction id
+     */
     @Override
     public Integer save(User obj) { //  Insert transaction
         try(Connection conn = this.connectionManager.getConnection()){
@@ -37,16 +42,27 @@ public class PostgresUserDao implements UserRepository{
             rs.next();
             return rs.getInt(1);
         }catch (SQLException ex){
-            System.out.println(ex);
+            System.out.println(ex.getMessage());
             return null;
         }
     }
 
+    /**
+     * No Implementation
+     * @author Husam Alsheikh
+     * @return returns null
+     */
     @Override
     public List<User> getAll() {
         return null;
     }
 
+    /**
+     * Method to get user from user id
+     * @author Husam Alsheikh
+     * @param integer user id
+     * @return returns user
+     */
     @Override
     public User getById(Integer integer) {
         try(Connection conn = this.connectionManager.getConnection()){
@@ -96,30 +112,55 @@ public class PostgresUserDao implements UserRepository{
             return new User(rs.getInt("userId"), rs.getString("username"), rs.getString("password"), accountsId, roles, transactionDTOS);
 
         }catch (SQLException ex){
-            System.out.println(ex);
+            System.out.println(ex.getMessage());
             return null;
         }
     }
 
+    /**
+     * No Implementation
+     * @author Husam Alsheikh
+     * @param obj user
+     */
     @Override
     public void delete(User obj) {
 
     }
 
+    /**
+     * No Implementation
+     * @author Husam Alsheikh
+     * @param integer user id
+     */
     @Override
     public void deleteById(Integer integer) {
 
     }
 
+    /**
+     * No Implementation
+     * @author Husam Alsheikh
+     * @param obj user
+     */
     @Override
     public void update(User obj) {
     }
 
+    /**
+     * No Implementation
+     * @author Husam Alsheikh
+     * @return returns null
+     */
     @Override
     public Integer getId() {
         return null;
     }
 
+    /**
+     * @author Husam Alsheikh
+     * @param username username
+     * @return returns user
+     */
     @Override
     public User getByUsername(String username) {
         try(Connection conn = this.connectionManager.getConnection()){
