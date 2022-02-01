@@ -32,8 +32,8 @@ public class App
         try {
             connectionManager.init(connectionManagerProps);
             System.out.println("Successfully Connected to the DB");
-        } catch (SQLException throwables) {
-            throw new IllegalStateException(throwables);
+        } catch (SQLException throwable) {
+            throw new IllegalStateException(throwable);
         }
 
         Repository<Integer, AccountDTO> accountRepo = new PostgresAccountDao(connectionManager);
