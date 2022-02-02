@@ -3,10 +3,14 @@ package org.example.services;
 import org.example.dao.UserRepository;
 import org.example.dto.TransactionDTO;
 import org.example.models.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
 public class UserService {
+    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
+
     private UserRepository userRepository;
 
     public UserService(UserRepository userRepository) {
@@ -47,6 +51,8 @@ public class UserService {
         //  Add account and update user
         accounts.add(accountNum);
         userRepository.update(user);
+
+        logger.info("User added a new account");
     }
 
     /**
@@ -61,5 +67,7 @@ public class UserService {
 
         //  Add Transaction
         userRepository.save(updatedUser);
+
+        logger.info("New transaction added to user");
     }
 }

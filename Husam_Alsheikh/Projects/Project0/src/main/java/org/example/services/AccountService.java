@@ -2,10 +2,12 @@ package org.example.services;
 
 import org.example.dao.Repository;
 import org.example.dto.AccountDTO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AccountService {
+    private static final Logger logger = LoggerFactory.getLogger(AccountService.class);
     Repository<Integer, AccountDTO> accountRepository;
-
 
     public AccountService(Repository<Integer, AccountDTO> accountRepository) {
         this.accountRepository = accountRepository;

@@ -1,12 +1,16 @@
 package org.example.services;
 
 import io.javalin.core.security.RouteRole;
+import org.example.App;
 import org.example.models.User;
 import org.example.models.Roles;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Set;
 
 public class AuthService {
+    private static final Logger logger = LoggerFactory.getLogger(AuthService.class);
     private UserService userService;
     private JWTService tokenService;
 
@@ -29,6 +33,7 @@ public class AuthService {
             return null;
         }
 
+        logger.info("User has successfully logged in");
         return tokenService.generate(username);
     }
 

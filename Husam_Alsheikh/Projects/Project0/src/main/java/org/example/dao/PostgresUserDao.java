@@ -4,6 +4,8 @@ import org.example.database.ConnectionManager;
 import org.example.dto.TransactionDTO;
 import org.example.models.Roles;
 import org.example.models.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -12,6 +14,7 @@ import java.util.List;
 import java.util.Set;
 
 public class PostgresUserDao implements UserRepository{
+    private static final Logger logger = LoggerFactory.getLogger(PostgresUserDao.class);
     private ConnectionManager connectionManager;
 
     public PostgresUserDao(ConnectionManager connectionManager) {
@@ -27,6 +30,8 @@ public class PostgresUserDao implements UserRepository{
     @Override
     public Integer save(User obj) { //  Insert transaction
         try(Connection conn = this.connectionManager.getConnection()){
+            logger.info("Insert transaction into database");
+
             TransactionDTO transactionDTO = obj.getTransactions().get(obj.getTransactions().size() - 1);
             String sql = "insert into Transactions(username, date, amount, description, accountNum, userId) values (?, ?, ?, ?, ?, ?) returning transactionId";
 
@@ -38,11 +43,15 @@ public class PostgresUserDao implements UserRepository{
             ps.setInt(5, transactionDTO.getAccountNum());
             ps.setInt(6, transactionDTO.getUserid());
 
-            ResultSet rs = ps.executeQuery();
+            ps.executeUpdate();
+            ResultSet rs = ps.getGeneratedKeys();
+
+            logger.info("SQL statement executed");
+
             rs.next();
             return rs.getInt(1);
         }catch (SQLException ex){
-            System.out.println(ex.getMessage());
+            logger.error("Save transaction error: {}", ex.getMessage());
             return null;
         }
     }
@@ -66,6 +75,8 @@ public class PostgresUserDao implements UserRepository{
     @Override
     public User getById(Integer integer) {
         try(Connection conn = this.connectionManager.getConnection()){
+            logger.info("Get user from database from id");
+
             List<Integer> accountsId = new ArrayList<>();
             Set<Roles> roles = new HashSet<>();
             List<TransactionDTO> transactionDTOS = new ArrayList<>();
@@ -74,6 +85,8 @@ public class PostgresUserDao implements UserRepository{
             String sql2 = "select * from accounts a where a.userid = ?";
             String sql3 = "select role from users u left join roles r on u.roleid = r.id where u.userid = ?";
             String sql4 = "select * from transactions t where t.userid = ?";
+
+
 
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, integer);
@@ -91,6 +104,8 @@ public class PostgresUserDao implements UserRepository{
             ResultSet rs2 = ps2.executeQuery();
             ResultSet rs3 = ps3.executeQuery();
             ResultSet rs4 = ps4.executeQuery();
+
+            logger.info("SQL statements executed");
 
             rs.next();
 
@@ -112,7 +127,7 @@ public class PostgresUserDao implements UserRepository{
             return new User(rs.getInt("userId"), rs.getString("username"), rs.getString("password"), accountsId, roles, transactionDTOS);
 
         }catch (SQLException ex){
-            System.out.println(ex.getMessage());
+            logger.error("Get user by id error: {}", ex.getMessage());
             return null;
         }
     }
@@ -164,6 +179,8 @@ public class PostgresUserDao implements UserRepository{
     @Override
     public User getByUsername(String username) {
         try(Connection conn = this.connectionManager.getConnection()){
+            logger.info("Get user from database from username");
+
             Set<Roles> roles = new HashSet<>();
             List<Integer> accountsId = new ArrayList<>();
 
@@ -190,6 +207,8 @@ public class PostgresUserDao implements UserRepository{
             ResultSet rs2 = ps2.executeQuery();
             ResultSet rs3 = ps3.executeQuery();
 
+            logger.info("SQL statements executed");
+
             rs.next();
 
             //  Get all accountsId
@@ -204,7 +223,7 @@ public class PostgresUserDao implements UserRepository{
 
             return new User(rs.getInt("userId"), rs.getString("username"), rs.getString("password"), accountsId, roles);
         }catch (SQLException ex){
-            System.out.println(ex);
+            logger.error("Get user by username error: {}", ex.getMessage());
             return null;
         }
     }

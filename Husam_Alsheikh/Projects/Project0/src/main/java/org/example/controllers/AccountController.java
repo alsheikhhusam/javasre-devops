@@ -9,10 +9,13 @@ import org.example.models.Roles;
 import org.example.models.User;
 import org.example.services.AccountService;
 import org.example.services.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
 public class AccountController {
+    private static final Logger logger = LoggerFactory.getLogger(AccountController.class);
     private AccountService accountService;
     private UserService userService;
 
@@ -29,23 +32,28 @@ public class AccountController {
         AccountDTO accountDTO = accountService.getAccount(acctId);  //  Get Bank Account based on Account ID
 
         //  Get logged-in user
-        User logger = context.cookieStore("principal");
+        User loggedUser = context.cookieStore("principal");
 
         //  If no logged-in users
-        if(logger == null){
+        if(loggedUser == null){
             throw new ForbiddenResponse("No user found - User not authorized");
         }
 
         //  Check to see if account belongs to the logged-in user or a
-        if(!logger.getRoles().contains(Roles.ROLE_ADMIN)){
-            if(accountDTO.getUserid() != logger.getId() || !accountDTO.getUsername().equals(logger.getUsername())){
+        if(!loggedUser.getRoles().contains(Roles.ROLE_ADMIN)){
+            if(accountDTO.getUserid() != loggedUser.getId() || !accountDTO.getUsername().equals(loggedUser.getUsername())){
                 throw new ForbiddenResponse("User not authorized to view account balance");
             }
         }
 
+        logger.info("User is authorized to view account balance");
+
         //  Add Transaction
         TransactionDTO transactionDTO = new TransactionDTO(accountDTO.getUserid(), accountDTO.getUsername(), accountDTO.getAccountNum(), "Balance View");
         userService.updateUserTransaction(transactionDTO);
+
+        logger.info("Balance returned to user");
+        logger.info("Transaction updated to database");
 
         context.result(String.valueOf(accountDTO.getBalance()));
     };
@@ -73,14 +81,19 @@ public class AccountController {
             }
         }
 
+        logger.info("User is authorized to deposit balance");
+
         //  Update Balance
         accountDTO.setBalance(accountDTO.getBalance() + amount);
         accountService.updateBalance(accountDTO);
+
+        logger.info("Balance deposit updated");
 
         //  Add Transaction
         TransactionDTO transactionDTO = new TransactionDTO(accountDTO.getUserid(), accountDTO.getUsername(), acctId, amount, "Balance Deposit");
         userService.updateUserTransaction(transactionDTO);
 
+        logger.info("Transaction updated to database");
         context.json(accountDTO);
     };
 
@@ -107,14 +120,19 @@ public class AccountController {
             }
         }
 
+        logger.info("User is authorized to withdraw balance");
+
         //  Update Balance
         accountDTO.setBalance(accountDTO.getBalance() - amount);
         accountService.updateBalance(accountDTO);
+
+        logger.info("Balance withdrawal updated");
 
         //  Add Transaction
         TransactionDTO transactionDTO = new TransactionDTO(accountDTO.getUserid(), accountDTO.getUsername(), acctId, amount, "Balance Withdraw");
         userService.updateUserTransaction(transactionDTO);
 
+        logger.info("Transaction updated to database");
         context.json(accountDTO);
     };
 
@@ -141,6 +159,8 @@ public class AccountController {
             }
         }
 
+        logger.info("User is authorized to transfer balance");
+
         TransferDTO transferDTO = context.bodyAsClass(TransferDTO.class);
 
         //  Get the user that is SENDING Balance (fromUser) and the user that is RECEIVING Balance (toUser)
@@ -156,11 +176,15 @@ public class AccountController {
             TransactionDTO transactionDTO = new TransactionDTO(fromUser.getId(), fromUser.getUsername(), userid, transferDTO.getTransferAmount(), "Balance Transfer");
             userService.updateUserTransaction(transactionDTO);
 
+            logger.info("Transaction updated to database");
+
             //  Print receiver's new balance and account details
+            logger.info("Balance transfer complete");
             context.json(receiverAccount);
             return;
         }
 
+        logger.error("Sending user account informatino is incorrect");
         throw new ForbiddenResponse("Sending User account information is incorrect");
     };
 
@@ -172,26 +196,31 @@ public class AccountController {
         AccountDTO accountDTO = accountService.getAccount(id);  //  Get Bank Account based on Account ID
 
         //  Get logged-in user
-        User logger = context.cookieStore("principal");
+        User loggedUser = context.cookieStore("principal");
 
         //  If no logged-in users
-        if(logger == null){
+        if(loggedUser == null){
             throw new ForbiddenResponse("No user found - User not authorized");
         }
 
         //  Check to see if account belongs to the logged-in user or a
-        if(!logger.getRoles().contains(Roles.ROLE_ADMIN)){
-            if(accountDTO.getUserid() != logger.getId() || !accountDTO.getUsername().equals(logger.getUsername())){
+        if(!loggedUser.getRoles().contains(Roles.ROLE_ADMIN)){
+            if(accountDTO.getUserid() != loggedUser.getId() || !accountDTO.getUsername().equals(loggedUser.getUsername())){
                 throw new ForbiddenResponse("User not authorized to view account balance");
             }
         }
 
+        logger.info("User is authorized to view transaction history");
+
         //  Get transaction list and output
         List<TransactionDTO> transactions = userService.getUserByID(id).getTransactions();
         if(transactions.isEmpty()){
+            logger.error("No transactions to show");
             context.result("No transactions to show!");
             return;
         }
+
+        logger.info("Transaction history displayed");
 
         context.json(transactions);
     };

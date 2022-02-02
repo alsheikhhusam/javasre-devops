@@ -7,8 +7,11 @@ import org.example.dto.CreateAccountDTO;
 import org.example.services.AccountService;
 import org.example.services.UserService;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class EmpController implements CrudHandler {
+    private static final Logger logger = LoggerFactory.getLogger(EmpController.class);
     private AccountService accountService;
     private UserService userService;
 
@@ -39,6 +42,8 @@ public class EmpController implements CrudHandler {
         //  Save account to accountRepo and update account of user
         int accountNum = accountService.save(newAccount.getUserid(), newAccount.getUsername());
         userService.addAccount(accountNum, newAccount.getUserid());
+
+        logger.info("Account saved to database");
 
         context.header("Location", "http://localhost:4200/createAccount/" + accountNum);
         context.status(201);

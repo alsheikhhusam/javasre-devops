@@ -13,6 +13,8 @@ import org.example.dto.AccountDTO;
 import org.example.models.User;
 import org.example.models.Roles;
 import org.example.services.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
 import java.util.Properties;
@@ -21,6 +23,8 @@ import static io.javalin.apibuilder.ApiBuilder.*;
 
 public class App
 {
+    private static final Logger logger = LoggerFactory.getLogger(App.class);
+
     public static void main( String[] args )
     {
         Properties connectionManagerProps = new Properties();
@@ -31,7 +35,8 @@ public class App
         ConnectionManager connectionManager = new PostgresConnectionManager();
         try {
             connectionManager.init(connectionManagerProps);
-            System.out.println("Successfully Connected to the DB");
+
+            logger.info("Successfully connected to the DB");
         } catch (SQLException throwable) {
             throw new IllegalStateException(throwable);
         }
@@ -39,26 +44,33 @@ public class App
         Repository<Integer, AccountDTO> accountRepo = new PostgresAccountDao(connectionManager);
         UserRepository userRepo = new PostgresUserDao(connectionManager);
 
+        logger.info("Creating repo instances");
+
         UserService userService = new UserService(userRepo);
         AccountService accountService = new AccountService(accountRepo);
         JWTService tokenService = new JWTService();
         AuthService authService = new AuthService(userService, tokenService);
 
+        logger.info("Creating services");
+
         AuthController authController = new AuthController(authService);
         AccountController accountController = new AccountController(accountService, userService);
+
+        logger.info("Creating controllers");
 
         Javalin app = Javalin.create(javalinConfig -> {
             javalinConfig.accessManager((handler, context, requiredRoles) -> {
                 String header = context.header("Authorization");
                 if(requiredRoles.isEmpty()) {
-                    System.out.println(requiredRoles);
                     handler.handle(context);
                     return;
                 }
                 if(header == null) {
-                    throw new ForbiddenResponse("This request requires and Authorization header");
+                    logger.error("This request requires an Authorization header");
+                    throw new ForbiddenResponse("This request requires an Authorization header");
                 } else {
                     if(!header.startsWith("Bearer ")) {
+                        logger.error("This request requires token bearer access");
                         throw new ForbiddenResponse("This request requires token bearer access");
                     } else {
                         String token = header.split(" ")[1];
@@ -69,10 +81,10 @@ public class App
                             User user = userService.getUserByUsername(username);
 
                             if(user == null) {
+                                logger.error("User unauthorized to perform request");
                                 throw new ForbiddenResponse("User unauthorized to perform request");
                             } else {
                                 if(authService.authorize(user, requiredRoles)) {
-
                                     //  Store user in cookie store
                                     context.cookieStore("principal", user);
 
@@ -80,11 +92,12 @@ public class App
                                     handler.handle(context);
 
                                 } else {
+                                    logger.error("User unauthorized to perform request");
                                     throw new ForbiddenResponse("User unauthorized to perform request");
                                 }
                             }
                         } catch (Exception ex) {
-                            System.out.println(ex.getMessage());
+                            logger.error("The user could not be validated");
                             throw new ForbiddenResponse("The user could not be validated");
                         }
                     }
@@ -104,6 +117,7 @@ public class App
                         User principal = context.cookieStore("principal");
 
                         if(!principal.getRoles().contains(Roles.ROLE_ADMIN)){ //  If logged-in user is not employee, throw error
+                            logger.error("User unauthorized to perform request");
                             throw new ForbiddenResponse("User unauthorized to perform request");
                         }
                     });
