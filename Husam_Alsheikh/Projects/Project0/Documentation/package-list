@@ -1,8 +1,2 @@
 org.example
-org.example.controllers
-org.example.dao
-org.example.database
-org.example.dto
-org.example.models
-org.example.services
-org.example.servicetests
+org.example.calculator

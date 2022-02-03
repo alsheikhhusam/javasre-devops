@@ -41,7 +41,6 @@ public class EmpController implements CrudHandler {
 
         //  Save account to accountRepo and update account of user
         int accountNum = accountService.save(newAccount.getUserid(), newAccount.getUsername());
-        userService.addAccount(accountNum, newAccount.getUserid());
 
         logger.info("Account saved to database");
 

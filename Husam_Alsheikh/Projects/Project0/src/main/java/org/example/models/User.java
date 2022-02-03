@@ -20,6 +20,12 @@ public class User {
         transactions = new ArrayList<>();
     }
 
+    public User(int id, String username, String password) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+    }
+
     public User(int id, String username, String password, Set<Roles> roles) {
         this.id = id;
         this.username = username;
@@ -30,12 +36,27 @@ public class User {
         transactions = new ArrayList<>();
     }
 
+    public User(int id, String username, String password, List<Integer> accountsId) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.accountsId = accountsId;
+    }
+
     public User(int id, String username, String password, List<Integer> accountsId, Set<Roles> roles) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.accountsId = accountsId;
         this.roles = roles;
+    }
+
+    public User(int id, String username, String password, List<Integer> accountsId, List<TransactionDTO> transactions) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.accountsId = accountsId;
+        this.transactions = transactions;
     }
 
     public User(int id, String username, String password, List<Integer> accountsId, Set<Roles> roles, List<TransactionDTO> transactions) {

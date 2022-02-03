@@ -36,24 +36,6 @@ public class UserService {
      */
     public User getUserByID(int userid){ return userRepository.getById(userid); }
 
-    /**
-     * Method to add account to user and update database
-     * @author Husam Alsheikh
-     * @param accountNum account's account number
-     * @param userid user id of the user that the account belongs to
-     */
-    public void addAccount(int accountNum, int userid){
-        User user = userRepository.getById(userid); //  Get user by id
-
-        //  Get accounts from user
-        List<Integer> accounts = user.getAccountsId();
-
-        //  Add account and update user
-        accounts.add(accountNum);
-        userRepository.update(user);
-
-        logger.info("User added a new account");
-    }
 
     /**
      * Method to add transaction to database
