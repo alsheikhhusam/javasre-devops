@@ -43,4 +43,8 @@ public class GreetingService {
         return listGreetingDTO;
 
     }
+
+    public Greeting greetingById(int id) {
+        return this.greetingRepository.getById(id);
+    }
 }

@@ -1,0 +1,36 @@
+create table if not exists mm_profile (
+	id serial primary key,
+	email varchar(40) not null unique
+);
+
+create table if not exists mm_user (
+	id serial primary key,
+	username varchar(20) not null unique,
+	hash varchar not null,
+	role varchar default 'ROLE_USER',
+	profile_id int4 not null unique references mm_profile(id)
+);
+
+create table if not exists mm_post (
+	id serial primary key,
+	poster_id int4 not null references mm_user(id),
+	receiver_id int4 not null references mm_user(id),
+	content varchar(255)
+);
+
+create table if not exists mm_likes (
+	user_id int4 not null references mm_user(id),
+	post_id int4 not null references mm_post(id),
+	primary key(user_id, post_id)
+);
+
+create table if not exists mm_tag (
+	id serial primary key,
+	name varchar unique not null
+);
+
+create table if not exists mm_posts_tags (
+	post_id int4 not null references mm_post(id),
+	tag_id int4 not null references mm_tag(id),
+	primary key(post_id, tag_id)
+);
