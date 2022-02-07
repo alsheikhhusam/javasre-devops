@@ -22,14 +22,15 @@ public class MmPostController {
     @GetMapping
     public ResponseEntity<List<MmPost>> getAllPosts(){
 
-        List<MmPost> posts = new ArrayList<>(Collections.singletonList(new MmPost(1, "husam", "john.doe", "hello")));
+        //List<MmPost> posts = new ArrayList<>(Collections.singletonList(new MmPost(1, "husam", "john.doe", "hello")));
 
-        return ResponseEntity.ok(posts);
+        return ResponseEntity.ok(null);
     }
 
     @GetMapping("{id}")
     public ResponseEntity<MmPost> getPostById(@PathVariable Integer id){
-        return ResponseEntity.ok(new MmPost(id, "husam", "john.doe", "hello"));
+        //return ResponseEntity.ok(new MmPost(id, "husam", "john.doe", "hello"));
+        return ResponseEntity.ok(null);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
