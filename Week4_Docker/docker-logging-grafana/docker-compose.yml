@@ -1,0 +1,45 @@
+version: "3.9"
+
+networks:
+  app:
+
+services:
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - 3000:3000
+    networks:
+      - app
+    container_name: grafana
+    depends_on:
+      - loki
+
+  loki:
+    image: grafana/loki:latest
+    ports:
+      - 3100:3100
+    networks:
+      - app
+    container_name: loki
+
+  promtail:
+    image: grafana/promtail:latest
+    container_name: promtail
+    networks:
+      - app
+    volumes:
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - ./promtail-config.yaml:/etc/promtail/promtail-config.yaml
+    command: -config.file=/etc/promtail/promtail-config.yaml
+
+  webapp:
+    image: ajduet/values
+    container_name: webapp
+    ports:
+      - 8080:8080
+    networks:
+      - app
+    logging:
+      driver: json-file
+      options:
+        tag: "{{.ImageName}}|{{.Name}}|{{.ImageFullID}}|{{.FullID}}"
