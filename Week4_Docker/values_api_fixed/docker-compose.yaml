@@ -1,6 +1,28 @@
 version: "3.9"
 
 services:
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - 3000:3000
+    container_name: grafana
+    depends_on:
+      - loki
+
+  loki:
+    image: grafana/loki:latest
+    ports:
+      - 3100:3100
+    container_name: loki
+
+  promtail:
+    image: grafana/promtail:latest
+    container_name: promtail
+    volumes:
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - ./container_config/promtail-config.yaml:/etc/promtail/promtail-config.yaml
+    command: -config.file=/etc/promtail/promtail-config.yaml
+
   api:
     image: ajduet/values
     restart: always
@@ -13,6 +35,11 @@ services:
     depends_on:
       - postgres
     container_name: api
+    logging:
+      driver: json-file
+      options:
+        tag: "{{.ImageName}}|{{.Name}}|{{.ImageFullID}}|{{.FullID}}"
+
   postgres:
     image: postgres
     restart: always
@@ -25,6 +52,7 @@ services:
     container_name: postgres_container
     volumes:
       - pgdata:/var/lib/postgresql/data/pgdata
+
 volumes:
   pgdata:
     driver: local
