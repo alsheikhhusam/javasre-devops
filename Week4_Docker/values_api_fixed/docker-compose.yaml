@@ -1,0 +1,30 @@
+version: "3.9"
+
+services:
+  api:
+    image: ajduet/values
+    restart: always
+    ports:
+      - 8080:8080
+    environment:
+      - DB_URL=jdbc:postgresql://postgres:5432/postgres
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=cat
+    depends_on:
+      - postgres
+    container_name: api
+  postgres:
+    image: postgres
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=cat
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    container_name: postgres_container
+    volumes:
+      - pgdata:/var/lib/postgresql/data/pgdata
+volumes:
+  pgdata:
+    driver: local
