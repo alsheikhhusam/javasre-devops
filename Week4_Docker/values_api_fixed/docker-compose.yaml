@@ -8,6 +8,8 @@ services:
     container_name: grafana
     depends_on:
       - loki
+    volumes:
+    - grafanadata:/var/lib/grafana
 
   loki:
     image: grafana/loki:latest
@@ -22,6 +24,15 @@ services:
       - /var/lib/docker/containers:/var/lib/docker/containers:ro
       - ./container_config/promtail-config.yaml:/etc/promtail/promtail-config.yaml
     command: -config.file=/etc/promtail/promtail-config.yaml
+
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - 9090:9090
+    volumes:
+      - ./prometheus:/etc/prometheus/
+      - prometheusdata:/prometheus
+    container_name: prometheus
 
   api:
     image: ajduet/values
@@ -55,4 +66,8 @@ services:
 
 volumes:
   pgdata:
+    driver: local
+  prometheusdata:
+    driver: local
+  grafanadata:
     driver: local
