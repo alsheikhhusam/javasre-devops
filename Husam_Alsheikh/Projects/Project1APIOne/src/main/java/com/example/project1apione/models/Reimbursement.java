@@ -17,6 +17,10 @@ public class Reimbursement {
     private Double amount;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "request_id")
+    private Request requests;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "emp_id")
     private Employee employees;
 
@@ -38,6 +42,14 @@ public class Reimbursement {
 
     public void setEmployees(Employee employees) {
         this.employees = employees;
+    }
+
+    public Request getRequests() {
+        return requests;
+    }
+
+    public void setRequests(Request requests) {
+        this.requests = requests;
     }
 
     public Double getAmount() {

@@ -1,5 +1,7 @@
 package com.example.project1apione.models;
 
+import com.example.project1apione.dto.CreateRequestDTO;
+
 import javax.persistence.*;
 
 @Entity
@@ -16,7 +18,7 @@ public class Request {
     @Column(name = "amount")
     private Double amount;
 
-    @Column(name = "status", length = 10)
+    @Column(name = "status", length = 15)
     private String status;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -26,6 +28,26 @@ public class Request {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "manager_id")
     private Manager managers;
+
+    public Request() {
+    }
+
+    public Request(Integer id, String date, Double amount, String status, Employee employees, Manager managers) {
+        this.id = id;
+        this.date = date;
+        this.amount = amount;
+        this.status = status;
+        this.employees = employees;
+        this.managers = managers;
+    }
+
+    public Request(CreateRequestDTO requestDTO, Employee employee, Manager manager) {
+        this.date = requestDTO.getDate();
+        this.amount = requestDTO.getAmount();
+        this.employees = employee;
+        this.managers = manager;
+        this.status = "Pending";
+    }
 
     public Manager getManagers() {
         return managers;
