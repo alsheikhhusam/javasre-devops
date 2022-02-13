@@ -1,11 +1,10 @@
 package com.example.project1apione.services;
 
-import com.example.project1apione.dao.EmployeeRepository;
-import com.example.project1apione.dao.ManagerRepository;
 import com.example.project1apione.dao.ReimbursementRepository;
 import com.example.project1apione.dto.AlLReimbursementsDTO;
 import com.example.project1apione.dto.ReimbursementDTO;
 import com.example.project1apione.models.Reimbursement;
+import com.example.project1apione.models.Request;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,14 +14,10 @@ import java.util.stream.Collectors;
 @Service
 public class ReimbursementService {
     private final ReimbursementRepository reimbursementRepository;
-    private final EmployeeRepository employeeRepository;
-    private final ManagerRepository managerRepository;
 
     @Autowired
-    public ReimbursementService(ReimbursementRepository reimbursementRepository, EmployeeRepository employeeRepository, ManagerRepository managerRepository) {
+    public ReimbursementService(ReimbursementRepository reimbursementRepository) {
         this.reimbursementRepository = reimbursementRepository;
-        this.employeeRepository = employeeRepository;
-        this.managerRepository = managerRepository;
     }
 
     public AlLReimbursementsDTO getMyReimbursements(Integer emp_id) {
@@ -43,5 +38,9 @@ public class ReimbursementService {
                 .collect(Collectors.toList());
 
         return new AlLReimbursementsDTO(transformed);
+    }
+
+    public void saveReimbursement(Request request){
+        reimbursementRepository.save(new Reimbursement(request.getDate(), request.getAmount(), request, request.getEmployees(), request.getManagers()));
     }
 }

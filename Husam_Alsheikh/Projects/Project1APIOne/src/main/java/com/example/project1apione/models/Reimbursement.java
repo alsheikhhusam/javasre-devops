@@ -28,6 +28,26 @@ public class Reimbursement {
     @JoinColumn(name = "manager_id")
     private Manager managers;
 
+    public Reimbursement() {
+    }
+
+    public Reimbursement(String date, Double amount, Request requests, Employee employees, Manager managers) {
+        this.date = date;
+        this.amount = amount;
+        this.requests = requests;
+        this.employees = employees;
+        this.managers = managers;
+    }
+
+    public Reimbursement(Integer id, String date, Double amount, Request requests, Employee employees, Manager managers) {
+        this.id = id;
+        this.date = date;
+        this.amount = amount;
+        this.requests = requests;
+        this.employees = employees;
+        this.managers = managers;
+    }
+
     public Manager getManagers() {
         return managers;
     }

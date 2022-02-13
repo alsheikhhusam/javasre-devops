@@ -43,7 +43,11 @@ public class RequestService {
         requestRepository.save(new Request(requestDTO, employee, managerRepository.getById(employee.getManagers().getId())));
     }
 
-    public void setRequestStatus(String status){
+    public void updateRequest(Request request){
+        requestRepository.save(request);
+    }
 
+    public Request getRequest(Integer req_id){
+        return requestRepository.getById(req_id);
     }
 }

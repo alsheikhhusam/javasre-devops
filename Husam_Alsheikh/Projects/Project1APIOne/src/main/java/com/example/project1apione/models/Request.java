@@ -96,4 +96,16 @@ public class Request {
     public void setId(Integer id) {
         this.id = id;
     }
+
+    @Override
+    public String toString() {
+        return "Request{" +
+                "id=" + id +
+                ", date='" + date + '\'' +
+                ", amount=" + amount +
+                ", status='" + status + '\'' +
+                ", employees=" + employees +
+                ", managers=" + managers +
+                '}';
+    }
 }
