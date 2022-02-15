@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simple-system-dep
+  labels:
+    app: simple-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: simple-system-api
+  template:
+    metadata:
+      labels:
+        app: simple-system-api
+    spec:
+      containers:
+        - image: ajduet/simple-system-api
+          name: simple-system-api
+          ports:
+            - containerPort: 8080
+          env:
+            - name: DB_URL
+              value: jdbc:postgresql://postgres-service:5432/postgres
+            - name: DB_USERNAME
+              value: postgres
+            - name: DB_PASSWORD
+              value: password123
+            - name: SPRING_PROFILES_ACTIVE
+              value: prod
