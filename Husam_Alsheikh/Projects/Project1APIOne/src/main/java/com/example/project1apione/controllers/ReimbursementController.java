@@ -17,7 +17,7 @@ public class ReimbursementController {
     @Value("3000")
     int port;
 
-    private ReimbursementService reimbursementService;
+    private final ReimbursementService reimbursementService;
 
     @Autowired
     public ReimbursementController(ReimbursementService reimbursementService) {
@@ -33,7 +33,7 @@ public class ReimbursementController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, path = "getAll/{manager_id}")
     public ResponseEntity<AlLReimbursementsDTO> getAllReimbursements(@PathVariable Integer manager_id){
         AlLReimbursementsDTO reimbursements = reimbursementService.getAllReimbursements(manager_id);
-        
+
         return ResponseEntity.ok(reimbursements);
     }
 }

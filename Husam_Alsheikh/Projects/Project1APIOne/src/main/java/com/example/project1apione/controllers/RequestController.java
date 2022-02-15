@@ -2,6 +2,7 @@ package com.example.project1apione.controllers;
 
 import com.example.project1apione.dto.AllRequestsDTO;
 import com.example.project1apione.dto.CreateRequestDTO;
+import com.example.project1apione.dto.EmailRequestDTO;
 import com.example.project1apione.dto.ReassignDTO;
 import com.example.project1apione.models.Manager;
 import com.example.project1apione.models.Request;
@@ -17,6 +18,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 
 @RestController
 @RequestMapping("requests")
@@ -51,25 +53,34 @@ public class RequestController {
     }
 
     @PatchMapping(consumes = MediaType.TEXT_PLAIN_VALUE, path = "approve-deny/{req_id}")
-    public ResponseEntity<?> approveDeny(@PathVariable Integer req_id, @RequestBody String status){
-        Request request = requestService.getRequest(req_id);
-        request.setStatus(status);
+    public ResponseEntity<?> approveDeny(@PathVariable Integer req_id, @RequestBody String status) throws URISyntaxException{
+        URI url = new URI("http://localhost:8081/api-two/emails");
 
-        requestService.updateRequest(request);
+        Request request = requestService.getRequest(req_id);
+        EmailRequestDTO emailRequestDTO = new EmailRequestDTO(request);
 
         if(status.equals("Approve")){
+            //  Approve and update request
+            request.setStatus("Approved");
+            requestService.updateRequest(request);
+
+            //  Save reimbursement
             reimbursementService.saveReimbursement(request);
 
             //  Tell email api to send email that request has been approved
-            ResponseEntity<Object> responseEntity = restTemplate.postForEntity("http://localhost:8081/api-two/emails", status, null);
+            ResponseEntity<Object> responseEntity = restTemplate.postForEntity(url, Arrays.asList(request.getEmployees().getEmail(), request.getAmount().toString(), request.getStatus()), null);
 
             if(responseEntity.getStatusCode().is5xxServerError()){
                 return ResponseEntity.internalServerError().build();
             }
         }
         else if(status.equals("Deny")){
+            //  Deny and update request
+            request.setStatus("Denied");
+            requestService.updateRequest(request);
+
             //  Tell email api to send email that request has been denied
-            ResponseEntity<Object> responseEntity = restTemplate.postForEntity("http://localhost:8081/api-two/emails", status, null);
+            ResponseEntity<Object> responseEntity = restTemplate.postForEntity(url, Arrays.asList(request.getEmployees().getEmail(), request.getAmount().toString(), request.getStatus()), null);
 
             if(responseEntity.getStatusCode().is5xxServerError()){
                 return ResponseEntity.internalServerError().build();
@@ -95,6 +106,7 @@ public class RequestController {
         requestService.updateRequest(request);
 
         //  Tell email api to send email that request has been reassigned
+        ResponseEntity<Object> responseEntity = restTemplate.postForEntity("http://localhost:8081/api-two/emails", request.getStatus(), null);
 
         return ResponseEntity.ok(null);
     }

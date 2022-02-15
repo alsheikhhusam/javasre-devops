@@ -2,3 +2,18 @@ server:
   port: 8081
   servlet:
     context-path: /api-two
+
+spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: emailapi84@gmail.com
+    password: gbboqptkbedtatpm
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+    smtp:
+      debug: true
