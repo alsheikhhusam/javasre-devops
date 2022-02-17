@@ -1,0 +1,16 @@
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+
+    <property name="CUSTOM_MDC_LOG_PATTERN" value="%clr(%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}}){faint} [ %mdc ] %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}" />
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+
+        <encoder>
+            <!-- <pattern>${CONSOLE_LOG_PATTERN}</pattern> -->
+            <pattern>${CUSTOM_MDC_LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+    <logger name="com.example" level="DEBUG">
+        <appender-ref ref="STDOUT"/>
+    </logger>
+</configuration>
