@@ -1,8 +1,11 @@
 package com.example.project1apione.models;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 
-@Entity
+@Entity @Getter @Setter
 @Table(name = "roles")
 public class Role {
     @Id
@@ -13,20 +16,4 @@ public class Role {
     @Enumerated(EnumType.STRING)
     @Column(name = "role", length = 10)
     private RoleType role;
-
-    public RoleType getRole() {
-        return role;
-    }
-
-    public void setRole(RoleType role) {
-        this.role = role;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 }

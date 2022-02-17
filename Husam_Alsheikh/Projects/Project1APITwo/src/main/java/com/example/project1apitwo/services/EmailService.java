@@ -2,7 +2,6 @@ package com.example.project1apitwo.services;
 
 import com.example.project1apitwo.dto.MailDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;

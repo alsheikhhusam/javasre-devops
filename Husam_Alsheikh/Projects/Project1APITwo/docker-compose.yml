@@ -1,0 +1,13 @@
+version: "3.9"
+
+services:
+  api1:
+    image: project1/api1
+    container_name: api1
+    ports:
+      - "3000:3000"
+    environment:
+    - api2URL=http://localhost:8081/api-two/emails
+  api2:
+    image: project1/api2
+    container_name: api2

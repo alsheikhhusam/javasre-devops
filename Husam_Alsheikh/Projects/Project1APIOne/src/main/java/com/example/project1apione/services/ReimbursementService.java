@@ -41,6 +41,6 @@ public class ReimbursementService {
     }
 
     public void saveReimbursement(Request request){
-        reimbursementRepository.save(new Reimbursement(request.getDate(), request.getAmount(), request, request.getEmployees(), request.getManagers()));
+        reimbursementRepository.save(new Reimbursement(request.getAmount(), request, request.getEmployees(), request.getManagers()));
     }
 }

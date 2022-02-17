@@ -12,11 +12,15 @@ spring:
         jdbc:
           lob:
             non_contextual_creation: true
-        format_sql: true
-    show-sql: true
+        format_sql: false
+    show-sql: false
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 
 server:
   port: 3000
   servlet:
     context-path: /api-one
+
+api:
+  config:
+    api2URL: http://localhost:8081/api-two/emails
