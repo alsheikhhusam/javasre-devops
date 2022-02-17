@@ -1,0 +1,11 @@
+models:
+  - id: 1
+    value: "mumbo"
+  - id: 2
+    value: "jumbo"
+  - id: 3
+    value: "ramble"
+  - id: 4
+    value: "bramble"
+  - id: 5
+    value: "The elephant with large ears is named Dumbo the elephant"

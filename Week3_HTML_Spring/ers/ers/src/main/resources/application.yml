@@ -1,0 +1,8 @@
+spring:
+  datasource:
+    username: postgres
+    password: p@$$w0rd123
+    url: jdbc:postgresql://35.226.133.168:5432/postgres
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    show-sql: true

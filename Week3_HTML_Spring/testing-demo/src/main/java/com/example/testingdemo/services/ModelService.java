@@ -20,4 +20,13 @@ public class ModelService {
     public List<Model> getAllModels() {
         return modelRepository.findAll();
     }
+
+    public Model getById(Long id) {
+        return modelRepository.getById(id);
+    }
+
+    public Model saveNewModel(Model m) {
+        modelRepository.save(m);
+        return m;
+    }
 }

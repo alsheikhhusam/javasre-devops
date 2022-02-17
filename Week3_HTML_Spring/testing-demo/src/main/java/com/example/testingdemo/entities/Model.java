@@ -16,6 +16,11 @@ public class Model {
     public Model() {
     }
 
+    public Model(long id, String value) {
+        this.id = id;
+        this.value = value;
+    }
+
     public long getId() {
         return id;
     }
@@ -30,5 +35,13 @@ public class Model {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    @Override
+    public String toString() {
+        return "Model{" +
+                "id=" + id +
+                ", value='" + value + '\'' +
+                '}';
     }
 }

@@ -1,0 +1,1 @@
+insert into models (value) values ('mumbo'), ('jumbo'), ('ramble'), ('bramble');
