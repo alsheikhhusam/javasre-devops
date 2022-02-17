@@ -15,11 +15,17 @@ import java.io.UnsupportedEncodingException;
 public class EmailService{
     private final JavaMailSender emailSender;
 
+    /**
+     * @param emailSender Autowire JavaMailSender
+     */
     @Autowired
     public EmailService(JavaMailSender emailSender) {
         this.emailSender = emailSender;
     }
 
+    /**
+     * @param mail Mail dto
+     */
     public void sendEmail(MailDTO mail){
         MimeMessage mimeMessage = emailSender.createMimeMessage();
 

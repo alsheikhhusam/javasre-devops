@@ -15,11 +15,18 @@ import java.util.stream.Collectors;
 public class ReimbursementService {
     private final ReimbursementRepository reimbursementRepository;
 
+    /**
+     * @param reimbursementRepository Autowire Reimbursement repo
+     */
     @Autowired
     public ReimbursementService(ReimbursementRepository reimbursementRepository) {
         this.reimbursementRepository = reimbursementRepository;
     }
 
+    /**
+     * @param emp_id Employee Id
+     * @return Returns list of reimbursements associated with the employee
+     */
     public AlLReimbursementsDTO getMyReimbursements(Integer emp_id) {
         List<Reimbursement> allReimbursements = reimbursementRepository.getAllByEmployees_Id(emp_id);
 
@@ -30,6 +37,10 @@ public class ReimbursementService {
         return new AlLReimbursementsDTO(transformed);
     }
 
+    /**
+     * @param manager_id Manager Id
+     * @return Returns list of reimbursements associated with the manager
+     */
     public AlLReimbursementsDTO getAllReimbursements(Integer manager_id) {
         List<Reimbursement> allReimbursements = reimbursementRepository.getAllByManagers_Id(manager_id);
 
@@ -40,6 +51,9 @@ public class ReimbursementService {
         return new AlLReimbursementsDTO(transformed);
     }
 
+    /**
+     * @param request Request to be saved
+     */
     public void saveReimbursement(Request request){
         reimbursementRepository.save(new Reimbursement(request.getAmount(), request, request.getEmployees(), request.getManagers()));
     }

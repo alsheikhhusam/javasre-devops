@@ -21,12 +21,19 @@ public class ReimbursementController {
 
     private final ReimbursementService reimbursementService;
 
+    /**
+     * @param reimbursementService Autowire ReimbursementService
+     */
     @Autowired
     public ReimbursementController(ReimbursementService reimbursementService) {
         log.info("-> Autowiring services");
         this.reimbursementService = reimbursementService;
     }
 
+    /**
+     * @param emp_id Employee Id to find reimbursements belonging to that employee
+     * @return Returns list of reimbursements belonging to employee
+     */
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, path = "getMy/{emp_id}")
     public ResponseEntity<?> getMyReimbursements(@PathVariable Integer emp_id) {
         AlLReimbursementsDTO reimbursements = reimbursementService.getMyReimbursements(emp_id);
@@ -41,6 +48,10 @@ public class ReimbursementController {
         return ResponseEntity.ok(reimbursements);
     }
 
+    /**
+     * @param manager_id Manager Id to find reimbursements that manager is responsible for
+     * @return Returns list of reimbursements that manager is responsible for
+     */
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, path = "getAll/{manager_id}")
     public ResponseEntity<?> getAllReimbursements(@PathVariable Integer manager_id){
         AlLReimbursementsDTO reimbursements = reimbursementService.getAllReimbursements(manager_id);

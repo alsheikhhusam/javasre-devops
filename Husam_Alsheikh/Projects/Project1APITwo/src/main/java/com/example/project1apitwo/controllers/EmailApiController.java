@@ -16,11 +16,18 @@ import java.util.List;
 public class EmailApiController {
     private final EmailService emailService;
 
+    /**
+     * @param emailService Autowired EmailService
+     */
     @Autowired
     public EmailApiController(EmailService emailService){
         this.emailService = emailService;
     }
 
+    /**
+     * @param list List of string containing information to be added to the email
+     * @return Returns nothing accepted status code
+     */
     @PostMapping
     public ResponseEntity<?> sendEmail(@RequestBody List<String> list){
         emailService.sendEmail(new MailDTO("emailapi84@gmail.com", list.get(0), "", "", "Employee Reimbursement", "Your Reimbursement for the amount $" +

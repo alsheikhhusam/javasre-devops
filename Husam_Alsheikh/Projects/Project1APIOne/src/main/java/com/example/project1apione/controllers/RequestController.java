@@ -35,6 +35,12 @@ public class RequestController {
     private final ManagerService managerService;
     private final RestTemplate restTemplate;
 
+    /**
+     * @param requestService Autowire RequestService
+     * @param reimbursementService Autowire ReimbursementService
+     * @param managerService Autowire ManagerService
+     * @param restTemplate Autowire RestTemplate
+     */
     @Autowired
     public RequestController(RequestService requestService, ReimbursementService reimbursementService, ManagerService managerService, RestTemplate restTemplate) {
         log.info("-> Autowiring Services");
@@ -46,6 +52,11 @@ public class RequestController {
         this.restTemplate = restTemplate;
     }
 
+    /**
+     * @param createRequestDTO DTO to hold request information supplied by employee
+     * @return Returns created status
+     * @throws URISyntaxException
+     */
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "create")
     public ResponseEntity<?> createNewRequest(@RequestBody CreateRequestDTO createRequestDTO) throws URISyntaxException {
         requestService.saveRequest(createRequestDTO);
@@ -55,6 +66,10 @@ public class RequestController {
         return ResponseEntity.created(new URI("http://localhost:" + port + "/api-one/requests/created")).build();
     }
 
+    /**
+     * @param emp_id Employee Id to get all associated requests
+     * @return Returns list of requests associated with the employee
+     */
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, path = "getRequests/{emp_id}")
     public ResponseEntity<?> getAllRequests(@PathVariable Integer emp_id) {
         log.info("-> Getting all Requests");
@@ -69,6 +84,12 @@ public class RequestController {
         return ResponseEntity.ok(requests);
     }
 
+    /**
+     * @param req_id RequestId to find the request
+     * @param status Whether the request has been approved or denied
+     * @return Returns ok status
+     * @throws URISyntaxException
+     */
     @PatchMapping(consumes = MediaType.TEXT_PLAIN_VALUE, path = "approve-deny/{req_id}")
     public ResponseEntity<?> approveDeny(@PathVariable Integer req_id, @RequestBody String status) throws URISyntaxException{
         Request request = requestService.getRequest(req_id);
@@ -115,7 +136,12 @@ public class RequestController {
         return ResponseEntity.ok(null);
     }
 
-    @PatchMapping(consumes = MediaType.APPLICATION_JSON_VALUE, path = "reassign/{req_id}")
+    /**
+     * @param req_id Request Id to find the request
+     * @param reassignTo Manager Id to whom the request will be assigned to
+     * @return Returns ok status
+     */
+    @PatchMapping(consumes = MediaType.TEXT_PLAIN_VALUE, path = "reassign/{req_id}")
     public ResponseEntity<?> reassign(@PathVariable Integer req_id, @RequestBody String reassignTo){
         Request request = requestService.getRequest(req_id);
 
@@ -133,15 +159,6 @@ public class RequestController {
         requestService.updateRequest(request);
 
         log.info("-> Request reassigned to Manager {}", manager.getId());
-
-        //  Tell email api to send email that request has been reassigned
-        ResponseEntity<Object> responseEntity = restTemplate.postForEntity("http://localhost:8081/api-two/emails", request.getStatus(), null);
-        if(responseEntity.getStatusCode().is5xxServerError()){
-            log.error("-> Email failed to send");
-            return ResponseEntity.internalServerError().build();
-        }
-
-        log.info("-> Email sent to Employee");
 
         return ResponseEntity.ok(null);
     }

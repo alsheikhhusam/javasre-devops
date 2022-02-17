@@ -20,6 +20,11 @@ public class RequestService {
     private final EmployeeRepository employeeRepository;
     private final ManagerRepository managerRepository;
 
+    /**
+     * @param requestRepository Autowire RequestRepository
+     * @param employeeRepository Autowire EmployeeRepository
+     * @param managerRepository Autowire ManagerRepository
+     */
     @Autowired
     public RequestService(RequestRepository requestRepository, EmployeeRepository employeeRepository, ManagerRepository managerRepository) {
         this.requestRepository = requestRepository;
@@ -27,6 +32,10 @@ public class RequestService {
         this.managerRepository = managerRepository;
     }
 
+    /**
+     * @param emp_id Employee Id
+     * @return Returns requests associated with employee
+     */
     public AllRequestsDTO getAllRequests(Integer emp_id) {
         List<Request> allRequests = requestRepository.getAllByEmployees_Id(emp_id);
 
@@ -37,16 +46,26 @@ public class RequestService {
         return new AllRequestsDTO(transformed);
     }
 
+    /**
+     * @param requestDTO Request to be saved
+     */
     public void saveRequest(CreateRequestDTO requestDTO){
         Employee employee = employeeRepository.getById(requestDTO.getEmp_id());
 
         requestRepository.save(new Request(requestDTO, employee, managerRepository.getById(employee.getManagers().getId())));
     }
 
+    /**
+     * @param request Request to be updated
+     */
     public void updateRequest(Request request){
         requestRepository.save(request);
     }
 
+    /**
+     * @param req_id Request Id
+     * @return Returns Request using request id
+     */
     public Request getRequest(Integer req_id){
         return requestRepository.getById(req_id);
     }
