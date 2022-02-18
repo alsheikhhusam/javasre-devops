@@ -1,5 +1,8 @@
 version: "3.9"
 
+networks:
+  api1-api2-network:
+
 services:
   api1:
     image: project1/api1
@@ -7,7 +10,15 @@ services:
     ports:
       - "3000:3000"
     environment:
-    - api2URL=http://localhost:8081/api-two/emails
+      - API2URL=http://api2:8081/api-two/emails
+      - spring.output.ansi.enabled=ALWAYS
+    networks:
+      - api1-api2-network
+
   api2:
     image: project1/api2
     container_name: api2
+    environment:
+      - spring.output.ansi.enabled=ALWAYS
+    networks:
+      - api1-api2-network

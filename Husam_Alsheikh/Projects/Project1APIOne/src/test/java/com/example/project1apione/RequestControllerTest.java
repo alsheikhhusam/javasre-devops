@@ -3,7 +3,6 @@ package com.example.project1apione;
 import com.example.project1apione.controllers.RequestController;
 import com.example.project1apione.dto.AllRequestsDTO;
 import com.example.project1apione.dto.RequestDTO;
-import com.example.project1apione.models.Request;
 import com.example.project1apione.services.ManagerService;
 import com.example.project1apione.services.ReimbursementService;
 import com.example.project1apione.services.RequestService;
@@ -11,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.client.RestTemplate;
 
@@ -36,12 +34,6 @@ public class RequestControllerTest {
 
     @MockBean
     private RestTemplate restTemplate;
-
-    @MockBean
-    private Request request;
-
-    @MockBean
-    private ResponseEntity<Object> responseEntity;
 
     @Autowired
     private MockMvc mockMvc;
