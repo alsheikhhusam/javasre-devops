@@ -1,6 +1,6 @@
 sudo apt-get update
 
-sudo apt-get install -y default-jre docker.io
+sudo apt-get install -y default-jre docker.io maven
 
 curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io.key | sudo tee \
     /usr/share/keyrings/jenkins-keyring.asc > /dev/null
