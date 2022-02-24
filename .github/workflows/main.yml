@@ -26,5 +26,5 @@ jobs:
       - name: Send custom message
         uses: sebastianpopp/discord-action@releases/v1
         with:
-          webhook_id: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
           message: New updates pushed to ${{ github.ref_name }} by ${{ github.actor }}
