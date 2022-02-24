@@ -28,4 +28,4 @@ jobs:
         with:
           webhook_id: ${{ secrets.DISCORD_WEBHOOK_URL }}
           webhook_token: ${{ secrets.DISCORD_WEBHOOK_TOKEN }}
-          args: New updates pushed to ${{ github.ref_name }} by ${{ github.actor }}
+          message: New updates pushed to ${{ github.ref_name }} by ${{ github.actor }}
