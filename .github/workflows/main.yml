@@ -27,4 +27,5 @@ jobs:
         uses: sebastianpopp/discord-action@releases/v1
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
-          message: New updates pushed to ${{ github.ref_name }} by ${{ github.actor }}
+          message: |-
+            New updates pushed to ${{ github.ref_name }} by ${{ github.actor }}. Don't forget to pull using ```git pull origin ${{ github.ref_name }}```
