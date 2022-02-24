@@ -12,9 +12,4 @@ public class SreDemoApplication {
         SpringApplication.run(SreDemoApplication.class, args);
     }
 
-    @Bean
-    public CommandLineRunner runner() {
-        return args -> System.out.println("Running");
-    }
-
 }

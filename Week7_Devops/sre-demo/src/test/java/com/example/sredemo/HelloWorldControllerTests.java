@@ -10,7 +10,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 @WebMvcTest(HelloWorldController.class)
-public class HelloWorldControllerTests {
+class HelloWorldControllerTests {
 
     @Autowired
     MockMvc mockMvc;
