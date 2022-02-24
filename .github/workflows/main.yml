@@ -24,8 +24,7 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
       - name: Send custom message
-        uses: appleboy/discord-action@master
+        uses: sebastianpopp/discord-action@releases/v1
         with:
           webhook_id: ${{ secrets.DISCORD_WEBHOOK_URL }}
-          webhook_token: ${{ secrets.DISCORD_WEBHOOK_TOKEN }}
           message: New updates pushed to ${{ github.ref_name }} by ${{ github.actor }}
