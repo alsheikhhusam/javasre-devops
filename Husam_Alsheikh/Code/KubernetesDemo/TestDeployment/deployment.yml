@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simple-api
+  labels:
+    app: simple-system-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: simple-system-api
+  template:
+    metadata:
+      labels:
+        app: simple-system-api
+    spec:
+      containers:
+        - image: husamalsheikh/k8sdemo:latest
+          imagePullPolicy: Always
+          name: simple-system-api
+          ports:
+            - containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /k8s/demo
+              port: 8080
+          readinessProbe:
+            httpGet:
+              path: /k8s/demo
+              port: 8080
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: api-service
+spec:
+  selector:
+    app: simple-system-api
+  type: NodePort
+  ports:
+    - port: 8080
+      targetPort: 8080
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: api-ingress
+spec:
+  defaultBackend:
+    service:
+      name: api-service
+      port:
+        number: 8080

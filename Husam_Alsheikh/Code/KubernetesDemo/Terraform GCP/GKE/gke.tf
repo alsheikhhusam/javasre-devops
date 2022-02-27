@@ -10,7 +10,7 @@ variable "gke_password" {
 }
 
 variable "gke_num_nodes" {
-  default     = 1 # 1 Nodes for each zone in the us-central1 region. Total 4
+  default     = 1 # 1 Nodes for each zone
   description = "number of nodes to deploy into the cluster"
 }
 
@@ -35,6 +35,10 @@ resource "google_container_node_pool" "primary_nodes" {
   location   = var.region
   cluster    = google_container_cluster.primary.name
   node_count = var.gke_num_nodes
+
+  node_locations = [ # Only 1 zone to limit number of nodes created. (is currently set to 1 node for each zone)
+      "us-central1-a",
+  ]
 
   node_config {
     oauth_scopes = [

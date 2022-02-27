@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class Controller {
     @GetMapping
     public ResponseEntity<?> print(){
-        System.out.println("Hello World");
-
         return ResponseEntity.ok("Look at me hosting a web app on a k8s cluster. YAY!");
     }
 }
