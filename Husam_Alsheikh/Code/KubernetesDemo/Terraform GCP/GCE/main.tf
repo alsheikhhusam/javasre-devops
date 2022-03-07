@@ -26,7 +26,7 @@ resource "google_compute_network" "vpc_network" {
 # Single Compute Engine Instance
 resource "google_compute_instance" "instance" {
   name         = "terraform-instance-${random_id.instance_id.hex}"
-  machine_type = "e2-micro"
+  machine_type = "n1-standard-1"
   zone         = "us-central1-a"
   tags         = ["terraformed-instance"]
 
