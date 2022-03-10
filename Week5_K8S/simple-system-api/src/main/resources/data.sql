@@ -1,0 +1,1 @@
+insert into resources (name, description, type) values ('Flicker', 'Multiple buttons for more flicking', 'WIDGET'), ('Spinner', 'Swirl with a whiz and a whirl', 'BIT'), ('Toggle', 'Now with two states: ON and OFF', 'BOB');
